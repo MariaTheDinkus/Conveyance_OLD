@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "conveyance",
+  "version": "${version}",
+
+  "name": "Conveyance",
+  "description": "An item transport and factory themed mod!",
+  "authors": [
+    "Zundrel"
+  ],
+  "contact": {
+    "homepage": "http://zundrel.com/",
+    "sources": "https://github.com/Zundrel/Conveyance"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/conveyance/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.zundrel.conveyance.Conveyance"
+    ]
+  },
+  "mixins": [
+    "conveyance.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
