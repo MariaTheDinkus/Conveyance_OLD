@@ -84,62 +84,6 @@
 			}
 		},
 		{
-			"name": "railing",
-			"from": [0, 0, -0.5],
-			"to": [1, 4.5, 0],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-1, 8, 8]},
-			"faces": {
-				"north": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"east": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"south": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"west": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"up": {"uv": [0, 0, 1, 0.5], "texture": "#side"},
-				"down": {"uv": [0, 0, 1, 0.5], "texture": "#side"}
-			}
-		},
-		{
-			"name": "railing",
-			"from": [0, 0, 16],
-			"to": [1, 4.5, 16.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-1, 8, 25]},
-			"faces": {
-				"north": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"east": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"south": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"west": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"up": {"uv": [0, 0, 1, 0.5], "texture": "#side"},
-				"down": {"uv": [0, 0, 1, 0.5], "texture": "#side"}
-			}
-		},
-		{
-			"name": "railing",
-			"from": [15, 0, -0.5],
-			"to": [16, 4.5, 0],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1, 8, 8]},
-			"faces": {
-				"north": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"east": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"south": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"west": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"up": {"uv": [0, 0, 1, 0.5], "texture": "#side"},
-				"down": {"uv": [0, 0, 1, 0.5], "texture": "#side"}
-			}
-		},
-		{
-			"name": "railing",
-			"from": [15, 0, 16],
-			"to": [16, 4.5, 16.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1, 8, 25]},
-			"faces": {
-				"north": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"east": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"south": {"uv": [0, 4, 1, 8.5], "texture": "#side"},
-				"west": {"uv": [0, 4, 0.5, 8.5], "texture": "#side"},
-				"up": {"uv": [0, 0, 1, 0.5], "texture": "#side"},
-				"down": {"uv": [0, 0, 1, 0.5], "texture": "#side"}
-			}
-		},
-		{
 			"name": "roller",
 			"from": [0.9, 1.2, 1.2],
 			"to": [15.1, 2.8, 2.8],
@@ -199,12 +143,12 @@
 		{
 			"name": "Railing",
 			"origin": [8, 8, 8],
-			"children": [6, 7, 8, 9]
+			"children": []
 		},
 		{
 			"name": "Rollers",
 			"origin": [8, 8, 8],
-			"children": [10, 11, 12, 13, 14]
+			"children": [6, 7, 8, 9, 10]
 		}
 	]
 }

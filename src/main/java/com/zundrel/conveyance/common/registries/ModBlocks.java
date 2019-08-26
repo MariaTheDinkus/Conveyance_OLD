@@ -29,8 +29,8 @@ public class ModBlocks {
     }
 
     private static <T extends Block> T register(String name, T block) {
-        Registry.BLOCK.add(new Identifier(Conveyance.MODID, name), block);
-        Registry.ITEM.add(Registry.BLOCK.getId(block), createBlockItem(block));
+        Registry.register(Registry.BLOCK, new Identifier(Conveyance.MODID, name), block);
+        Registry.register(Registry.ITEM, Registry.BLOCK.getId(block), createBlockItem(block));
 
         return block;
     }
@@ -38,6 +38,13 @@ public class ModBlocks {
     private static <T extends Block> T register(String name, T block, BlockItem blockItem) {
         Registry.register(Registry.BLOCK, new Identifier(Conveyance.MODID, name), block);
         Registry.register(Registry.ITEM, new Identifier(Conveyance.MODID, name), blockItem);
+
+        return block;
+    }
+
+    private static <T extends Block> T register(String name, T block, String itemName, BlockItem blockItem) {
+        Registry.register(Registry.BLOCK, new Identifier(Conveyance.MODID, name), block);
+        Registry.register(Registry.ITEM, new Identifier(Conveyance.MODID, itemName), blockItem);
 
         return block;
     }

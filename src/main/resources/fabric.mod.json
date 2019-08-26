@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "com.zundrel.conveyance.Conveyance"
+    ],
+	"client": [
+      "com.zundrel.conveyance.client.ConveyanceClient"
     ]
   },
   "mixins": [
