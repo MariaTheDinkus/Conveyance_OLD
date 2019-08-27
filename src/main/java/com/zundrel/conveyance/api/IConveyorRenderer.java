@@ -13,10 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.TallBlockItem;
+import net.minecraft.item.*;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 
@@ -68,9 +65,9 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
         }
 
         int seed = stack.isEmpty() ? 187 : Item.getRawId(stack.getItem()) + stack.getDamage();
-        random.setSeed((long)seed);
+        random.setSeed(seed);
 
-        if (stack.getItem() instanceof BlockItem) {
+        if (stack.getItem() instanceof BlockItem && stack.getItem() != Items.REDSTONE) {
             BlockItem blockItem = (BlockItem) stack.getItem();
             Block block = blockItem.getBlock();
 
@@ -136,14 +133,16 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
                     MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.FIXED);
                     GlStateManager.popMatrix();
                 }
-            } else if (block instanceof BedBlock) {
-                GlStateManager.scaled(0.5, 0.5, 0.5);
-                GlStateManager.translated(0, 0, 0.5);
-
-                MinecraftClient.getInstance().getBlockRenderManager().renderDynamic(block.getDefaultState(), 1);
             } else {
                 GlStateManager.scaled(0.5, 0.5, 0.5);
+
+                if (block instanceof ChestBlock || block instanceof EnderChestBlock)
+                    GlStateManager.rotated(180, 0, 1, 0);
+
                 GlStateManager.translated(-0.5, 0, 0.5);
+
+                if (block instanceof BedBlock)
+                    GlStateManager.translated(0.5, 0, 0);
 
                 if (block.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
                     GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -152,8 +151,6 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
                     GlStateManager.enableBlend();
                     GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                 }
-
-                BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(block.getDefaultState());
 
                 for (int i = 0; i < int_1; i++) {
                     GlStateManager.pushMatrix();
@@ -164,7 +161,7 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
                         GlStateManager.rotated(random.nextInt(10), 0, 1, 0);
                         GlStateManager.translated(x * 2, y * 0.5, z * 2);
                     }
-                    MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(model, block.getDefaultState(), 1, true);
+                    MinecraftClient.getInstance().getBlockRenderManager().renderDynamic(block.getDefaultState(), 1);
                     GlStateManager.popMatrix();
                 }
 
