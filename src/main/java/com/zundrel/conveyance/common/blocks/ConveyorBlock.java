@@ -1,8 +1,10 @@
 package com.zundrel.conveyance.common.blocks;
 
+import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.api.Casing;
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.registries.ModBlocks;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
@@ -125,6 +127,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
         world_1.updateNeighbor(blockPos_1.offset(blockState_1.get(FACING)).down(), this, blockPos_1);
         world_1.updateNeighbor(blockPos_1.offset(blockState_1.get(FACING).getOpposite()).down(), this, blockPos_1);
+        world_1.updateNeighbor(blockPos_1.offset(blockState_1.get(FACING)).offset(blockState_1.get(FACING)), this, blockPos_1);
     }
 
     @Override
@@ -138,6 +141,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
             world_1.updateNeighbor(blockPos_1.offset(blockState_1.get(FACING)).down(), this, blockPos_1);
             world_1.updateNeighbor(blockPos_1.offset(blockState_1.get(FACING).getOpposite()).down(), this, blockPos_1);
+            world_1.updateNeighbor(blockPos_1.offset(blockState_1.get(FACING)).offset(blockState_1.get(FACING)), this, blockPos_1);
 
             super.onBlockRemoved(blockState_1, world_1, blockPos_1, blockState_2, boolean_1);
         }
@@ -149,14 +153,30 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         Direction direction = newState.get(FACING);
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1);
 
+        BlockPos frontPos = blockPos_1.offset(direction);
         BlockPos leftPos = blockPos_1.offset(direction.rotateYCounterclockwise());
         BlockPos rightPos = blockPos_1.offset(direction.rotateYClockwise());
         BlockPos upPos = blockPos_1.up();
 
-        if (world_1.getBlockEntity(blockPos_1.offset(direction)) instanceof ConveyorBlockEntity)
+        if (world_1.getBlockEntity(blockPos_1.offset(direction)) instanceof ConveyorBlockEntity) {
             conveyorBlockEntity.setFront(true);
-        else
+        } else
             conveyorBlockEntity.setFront(false);
+
+        if (world_1.getBlockEntity(blockPos_1.offset(direction).down()) instanceof DownVerticalConveyorBlockEntity)
+            conveyorBlockEntity.setDown(true);
+        else
+            conveyorBlockEntity.setDown(false);
+
+        if (!conveyorBlockEntity.hasDown() && world_1.getBlockState(frontPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(frontPos.offset(direction)).getBlock() instanceof ConveyorBlock){
+            Direction frontDirection = world_1.getBlockState(frontPos).get(FACING);
+            Direction acrossDirection = world_1.getBlockState(frontPos.offset(direction)).get(FACING);
+            if (acrossDirection == direction.getOpposite() && (frontDirection == direction.rotateYClockwise() || frontDirection == direction.rotateYCounterclockwise())) {
+                conveyorBlockEntity.setAcross(true);
+            } else
+                conveyorBlockEntity.setAcross(false);
+        } else
+            conveyorBlockEntity.setAcross(false);
 
         if (world_1.getBlockState(leftPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(leftPos).get(FACING) == direction.rotateYClockwise())
             newState = newState.with(ConveyorProperties.LEFT, true);

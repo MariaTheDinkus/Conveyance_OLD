@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,10 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
         super(ModBlockEntities.VERTICAL_CONVEYOR);
     }
 
+    public VerticalConveyorBlockEntity(BlockEntityType type) {
+        super(type);
+    }
+
     @Override
     public void tick() {
         tickConveyor();
@@ -39,41 +44,32 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
 
         if (!isInvEmpty() && up && getWorld().getBlockEntity(getPos().up()) instanceof VerticalConveyorBlockEntity) {
             advancePosition(getPos().up());
-        } else if (!conveyor && position > 0) {
-            setPosition(0);
-        }
-
-        if (!isInvEmpty() && conveyor && getWorld().getBlockEntity(getPos().offset(direction).up()) instanceof ConveyorBlockEntity) {
+        } else if (!isInvEmpty() && conveyor && getWorld().getBlockEntity(getPos().offset(direction).up()) instanceof ConveyorBlockEntity) {
             ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(getPos().offset(direction).up());
-            ItemStack stack = conveyorBlockEntity.getInvStack(0);
             boolean empty = conveyorBlockEntity.isInvEmpty();
 
-            if (!getWorld().isClient() && position >= 15 && horizontalPosition >= 8 && conveyorBlockEntity.isInvEmpty()) {
+            if (!getWorld().isClient() && position >= 16 && horizontalPosition >= 8 && conveyorBlockEntity.isInvEmpty()) {
                 conveyorBlockEntity.setInvStack(0, getInvStack(0));
                 removeInvStack(0);
             }
 
-            if (empty && position < 15 || !empty && position < 15 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && position < 16 || !empty && position < 16 && conveyorBlockEntity.getPosition() > 4) {
                 setPosition(position + 1);
             } else {
                 prevPosition = position;
             }
 
-            if (empty && horizontalPosition < 8 && position >= 15 || !empty && horizontalPosition < 8 && position >= 15 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && horizontalPosition < 8 && position >= 16 || !empty && horizontalPosition < 8 && position >= 15 && conveyorBlockEntity.getPosition() > 4) {
                 setHorizontalPosition(horizontalPosition + 1);
             } else {
                 prevHorizontalPosition = horizontalPosition;
             }
-        } else if (!up && position > 0) {
-            setPosition(0);
-        }
-
-        if (isInvEmpty() && position > 0) {
-            setPosition(0);
-        }
-
-        if (isInvEmpty() && horizontalPosition > 0 || !conveyor && horizontalPosition > 0) {
-            setHorizontalPosition(0);
+        } else {
+            if (horizontalPosition > 0) {
+                setPosition(horizontalPosition - 1);
+            } else if (position > 0) {
+                setPosition(position - 1);
+            }
         }
     }
 
@@ -86,62 +82,11 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
         markDirty();
     }
 
-    //    private void tickDown() {
-//        Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
-//        boolean front = getCachedState().get(ConveyorProperties.FRONT);
-//        boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
-//
-//        if (!isInvEmpty() && !conveyor && getWorld().getBlockEntity(getPos().down()) instanceof VerticalConveyorBlockEntity && getWorld().getBlockState(getPos().down()).get(ConveyorProperties.DOWN)) {
-//            horizontalPosition = 8;
-//            prevHorizontalPosition = 8;
-//
-//            advancePosition(getPos().down());
-//        }
-//
-//        if (!isInvEmpty() && conveyor && getWorld().getBlockEntity(getPos().down()) instanceof VerticalConveyorBlockEntity && getWorld().getBlockState(getPos().down()).get(ConveyorProperties.DOWN)) {
-//            VerticalConveyorBlockEntity conveyorBlockEntity = (VerticalConveyorBlockEntity) getWorld().getBlockEntity(getPos().down());
-//            ItemStack stack = conveyorBlockEntity.getInvStack(0);
-//            boolean empty = conveyorBlockEntity.isInvEmpty();
-//
-//            if (!getWorld().isClient() && position >= 16 && horizontalPosition >= 8 && conveyorBlockEntity.isInvEmpty()) {
-//                conveyorBlockEntity.setInvStack(0, getInvStack(0));
-//                removeInvStack(0);
-//            }
-//
-//            if (horizontalPosition < 8) {
-//                setHorizontalPosition(horizontalPosition + 1);
-//            } else {
-//                prevHorizontalPosition = horizontalPosition;
-//            }
-//
-//            if (empty && position < 16 && horizontalPosition >= 8 || !empty && position < 16 && horizontalPosition >= 8 && conveyorBlockEntity.getPosition() > 4) {
-//                setPosition(position + 1);
-//            } else {
-//                prevPosition = position;
-//            }
-//        }
-//
-//        if (!isInvEmpty() && front && getWorld().getBlockEntity(getPos().offset(direction.getOpposite())) instanceof ConveyorBlockEntity) {
-//            horizontalPosition = 8;
-//            prevHorizontalPosition = 8;
-//
-//            advancePosition(getPos().offset(direction.getOpposite()));
-//        }
-//
-//        if (isInvEmpty() && position > 0) {
-//            horizontalPosition = 8;
-//            prevHorizontalPosition = 8;
-//
-//            setPosition(0);
-//        }
-//    }
-
     public void advancePosition(BlockPos pos) {
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
-        ItemStack stack = conveyorBlockEntity.getInvStack(0);
         boolean empty = conveyorBlockEntity.isInvEmpty();
 
-        if (!getWorld().isClient() && position >= 16 && conveyorBlockEntity.isInvEmpty()) {
+        if (position >= 16 && conveyorBlockEntity.isInvEmpty()) {
             conveyorBlockEntity.setInvStack(0, getInvStack(0));
             removeInvStack(0);
         }
@@ -152,8 +97,8 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
             prevPosition = position;
         }
 
-        if (!conveyorBlockEntity.isInvEmpty() && conveyorBlockEntity.getPosition() == 0) {
-            setPosition(0);
+        if (position > 0 && !conveyorBlockEntity.isInvEmpty() && conveyorBlockEntity.getPosition() == 0) {
+            setPosition(position - 1);
         }
     }
 
@@ -175,6 +120,14 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
         this.horizontalPosition = horizontalPosition;
     }
 
+    public void setReverseHorizontalPosition(int position) {
+        this.horizontalPosition = prevHorizontalPosition;
+        if (position == 0)
+            this.prevHorizontalPosition = 0;
+        else
+            this.prevHorizontalPosition = position;
+    }
+
     @Override
     public void fromTag(CompoundTag compoundTag_1) {
         super.fromTag(compoundTag_1);
@@ -184,9 +137,19 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     @Override
+    public void fromClientTag(CompoundTag compoundTag) {
+        fromTag(compoundTag);
+    }
+
+    @Override
     public CompoundTag toTag(CompoundTag compoundTag_1) {
         Inventories.toTag(compoundTag_1, items);
         compoundTag_1.putBoolean("up", up);
         return super.toTag(compoundTag_1);
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag compoundTag) {
+        return toTag(compoundTag);
     }
 }

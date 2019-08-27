@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.zundrel.conveyance.common.blocks.ConveyorProperties;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -41,13 +43,12 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
 
         GlStateManager.translated(0, 2.49F / 16F, 0);
 
+        if (!(blockEntity instanceof DownVerticalConveyorBlockEntity) && blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) && blockEntity.getPosition() == 16)
+            GlStateManager.translated(0, -1F / 16F, 0);
+
         MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(Blocks.IRON_TRAPDOOR), ModelTransformation.Type.FIXED);
 
         GlStateManager.popMatrix();
-
-        if (blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) && blockEntity.getPosition() == 15) {
-            GlStateManager.translated(0, 1F / 16F, 0);
-        }
     }
 
     default void renderItem(ItemStack stack) {

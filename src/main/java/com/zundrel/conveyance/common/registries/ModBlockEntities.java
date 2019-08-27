@@ -4,6 +4,7 @@ import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.ConveyorBlock;
 import com.zundrel.conveyance.common.blocks.VerticalConveyorBlock;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -18,10 +19,12 @@ import net.minecraft.util.registry.Registry;
 public class ModBlockEntities {
     public static BlockEntityType CONVEYOR;
     public static BlockEntityType VERTICAL_CONVEYOR;
+    public static BlockEntityType DOWN_VERTICAL_CONVEYOR;
 
     public static void init() {
         CONVEYOR = registerConveyor("conveyor", ModBlocks.CONVEYOR);
         VERTICAL_CONVEYOR = registerVerticalConveyor("vertical_conveyor", ModBlocks.VERTICAL_CONVEYOR);
+        DOWN_VERTICAL_CONVEYOR = registerDownVerticalConveyor("down_vertical_conveyor", ModBlocks.DOWN_VERTICAL_CONVEYOR);
     }
 
     private static BlockEntityType registerConveyor(String name, Block... block) {
@@ -30,5 +33,9 @@ public class ModBlockEntities {
 
     private static BlockEntityType registerVerticalConveyor(String name, Block... block) {
         return Registry.register(Registry.BLOCK_ENTITY, new Identifier(Conveyance.MODID, name), BlockEntityType.Builder.create(VerticalConveyorBlockEntity::new, block).build(null));
+    }
+
+    private static BlockEntityType registerDownVerticalConveyor(String name, Block... block) {
+        return Registry.register(Registry.BLOCK_ENTITY, new Identifier(Conveyance.MODID, name), BlockEntityType.Builder.create(DownVerticalConveyorBlockEntity::new, block).build(null));
     }
 }

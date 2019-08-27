@@ -2,6 +2,7 @@ package com.zundrel.conveyance.common.registries;
 
 import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.ConveyorBlock;
+import com.zundrel.conveyance.common.blocks.DownVerticalConveyorBlock;
 import com.zundrel.conveyance.common.blocks.VerticalConveyorBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -14,10 +15,12 @@ import net.minecraft.util.registry.Registry;
 public class ModBlocks {
     public static ConveyorBlock CONVEYOR;
     public static VerticalConveyorBlock VERTICAL_CONVEYOR;
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR;
 
     public static void init() {
         CONVEYOR = register("conveyor", new ConveyorBlock(Block.Settings.copy(Blocks.IRON_BLOCK)));
         VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(Block.Settings.copy(Blocks.IRON_BLOCK)));
+        DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(Block.Settings.copy(Blocks.IRON_BLOCK)));
     }
 
     private static BlockItem createBlockItem(Block block) {
