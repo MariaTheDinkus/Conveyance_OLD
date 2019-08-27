@@ -1,6 +1,5 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import com.zundrel.conveyance.common.blocks.ConveyorProperties;
 import com.zundrel.conveyance.common.inventory.ConveyorInventory;
 import com.zundrel.conveyance.common.registries.ModBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -20,6 +19,7 @@ import net.minecraft.util.math.Direction;
 
 public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity, ConveyorInventory, Tickable {
     protected final DefaultedList<ItemStack> items = DefaultedList.ofSize(1, ItemStack.EMPTY);
+    protected boolean front = false;
     protected int position = 0;
     protected int prevPosition = 0;
 
@@ -34,7 +34,6 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
     @Override
     public void tick() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
-        boolean front = getCachedState().get(ConveyorProperties.FRONT);
 
         if (!isInvEmpty() && front && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity) {
             ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(getPos().offset(direction));
@@ -65,6 +64,15 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
     @Override
     public int[] getRenderAttachmentData() {
         return new int[] { position, prevPosition };
+    }
+
+    public boolean hasFront() {
+        return front;
+    }
+
+    public void setFront(boolean front) {
+        this.front = front;
+        markDirty();
     }
 
     public int getPosition() {
@@ -111,7 +119,7 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
         super.fromTag(compoundTag_1);
         items.clear();
         Inventories.fromTag(compoundTag_1, items);
-        //position = compoundTag_1.getInt("position");
+        front = compoundTag_1.getBoolean("front");
     }
 
     @Override
@@ -122,7 +130,7 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
     @Override
     public CompoundTag toTag(CompoundTag compoundTag_1) {
         Inventories.toTag(compoundTag_1, items);
-        //compoundTag_1.putInt("position", position);
+        compoundTag_1.putBoolean("front", front);
         return super.toTag(compoundTag_1);
     }
 

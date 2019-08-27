@@ -1,7 +1,6 @@
 package com.zundrel.conveyance;
 
-import com.zundrel.conveyance.common.registries.ModBlockEntities;
-import com.zundrel.conveyance.common.registries.ModBlocks;
+import com.zundrel.conveyance.common.registries.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
@@ -19,6 +18,7 @@ public class Conveyance implements ModInitializer {
 	@Override
 	public void onInitialize() {
         ModBlocks.init();
+        ModItems.init();
         ModBlockEntities.init();
 	}
 }

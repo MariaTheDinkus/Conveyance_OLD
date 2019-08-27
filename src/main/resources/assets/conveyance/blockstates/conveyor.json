@@ -12,6 +12,54 @@
 	{   "when": { "facing": "west" },
 		"apply": { "model": "conveyance:block/conveyor", "y": 270 }
 	},
+	{   "when": { "facing": "north", "left": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass" }
+	},
+	{   "when": { "facing": "north", "right": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass", "y": 180 }
+	},
+	{   "when": { "facing": "east", "left": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass", "y": 90 }
+	},
+	{   "when": { "facing": "east", "right": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass", "y": 270 }
+	},
+	{   "when": { "facing": "south", "left": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass", "y": 180 }
+	},
+	{   "when": { "facing": "south", "right": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass" }
+	},
+	{   "when": { "facing": "west", "left": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass", "y": 270 }
+	},
+	{   "when": { "facing": "west", "right": "false", "casing": "glass" },
+		"apply": { "model": "conveyance:block/conveyor_glass", "y": 90 }
+	},
+	{   "when": { "facing": "north", "left": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque" }
+	},
+	{   "when": { "facing": "north", "right": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque", "y": 180 }
+	},
+	{   "when": { "facing": "east", "left": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque", "y": 90 }
+	},
+	{   "when": { "facing": "east", "right": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque", "y": 270 }
+	},
+	{   "when": { "facing": "south", "left": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque", "y": 180 }
+	},
+	{   "when": { "facing": "south", "right": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque" }
+	},
+	{   "when": { "facing": "west", "left": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque", "y": 270 }
+	},
+	{   "when": { "facing": "west", "right": "false", "casing": "opaque" },
+		"apply": { "model": "conveyance:block/conveyor_opaque", "y": 90 }
+	},
 	{   "when": { "facing": "north", "left": "false" },
 		"apply": { "model": "conveyance:block/conveyor_railing" }
 	},

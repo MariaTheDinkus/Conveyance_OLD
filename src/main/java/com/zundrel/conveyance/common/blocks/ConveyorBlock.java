@@ -1,7 +1,9 @@
 package com.zundrel.conveyance.common.blocks;
 
+import com.zundrel.conveyance.api.Casing;
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
+import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.registries.ModBlocks;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
 import net.minecraft.block.*;
@@ -28,7 +30,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     public ConveyorBlock(Settings settings) {
         super(settings);
 
-        setDefaultState(getDefaultState().with(ConveyorProperties.FRONT, false).with(ConveyorProperties.LEFT, false).with(ConveyorProperties.RIGHT, false).with(ConveyorProperties.UP, false));
+        setDefaultState(getDefaultState().with(ConveyorProperties.CASING, Casing.NONE).with(ConveyorProperties.LEFT, false).with(ConveyorProperties.RIGHT, false).with(ConveyorProperties.UP, false));
     }
 
     @Override
@@ -37,8 +39,23 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public void onWrenched(PlayerEntity player) {
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
 
+    @Override
+    public void onWrenched(World world, BlockState state, BlockPos pos, PlayerEntity player) {
+        if (!player.isSneaking())
+            world.setBlockState(pos, state.with(FACING, state.get(FACING).rotateYClockwise()));
+        else if (state.get(ConveyorProperties.CASING) == Casing.GLASS) {
+            world.setBlockState(pos, state.with(ConveyorProperties.CASING, Casing.NONE));
+            if (!player.isCreative())
+                player.inventory.offerOrDrop(world, new ItemStack(Blocks.GLASS));
+        } else if (state.get(ConveyorProperties.CASING) == Casing.OPAQUE) {
+            world.setBlockState(pos, state.with(ConveyorProperties.CASING, Casing.NONE));
+            if (!player.isCreative())
+                player.inventory.offerOrDrop(world, new ItemStack(Blocks.IRON_BLOCK));
+        }
     }
 
     @Override
@@ -56,7 +73,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         if (!entity_1.onGround)
             return;
 
-        if (entity_1 instanceof PlayerEntity && ((PlayerEntity) entity_1).isSneaking())
+        if (entity_1 instanceof ItemEntity || entity_1 instanceof PlayerEntity && entity_1.isSneaking())
             return;
 
         Direction direction = blockState_1.get(FACING);
@@ -68,8 +85,24 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     public boolean activate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1) {
         ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1);
 
-        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) instanceof IConveyor)
+        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) instanceof IConveyor || playerEntity_1.getStackInHand(hand_1).getItem() instanceof WrenchItem))
             return false;
+
+        if (blockState_1.get(ConveyorProperties.CASING) == Casing.NONE && !playerEntity_1.getStackInHand(hand_1).isEmpty()) {
+            if (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) == Blocks.GLASS) {
+                world_1.setBlockState(blockPos_1, blockState_1.with(ConveyorProperties.CASING, Casing.GLASS));
+                if (!playerEntity_1.isCreative())
+                    playerEntity_1.getStackInHand(hand_1).decrement(1);
+
+                return true;
+            } else if (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) == Blocks.IRON_BLOCK) {
+                world_1.setBlockState(blockPos_1, blockState_1.with(ConveyorProperties.CASING, Casing.OPAQUE));
+                if (!playerEntity_1.isCreative())
+                    playerEntity_1.getStackInHand(hand_1).decrement(1);
+
+                return true;
+            }
+        }
 
         if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && blockEntity.getInvStack(0).isEmpty()) {
             blockEntity.setInvStack(0, playerEntity_1.getStackInHand(hand_1));
@@ -114,15 +147,16 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     public void neighborUpdate(BlockState blockState_1, World world_1, BlockPos blockPos_1, Block block_1, BlockPos blockPos_2, boolean boolean_1) {
         BlockState newState = blockState_1;
         Direction direction = newState.get(FACING);
+        ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1);
 
         BlockPos leftPos = blockPos_1.offset(direction.rotateYCounterclockwise());
         BlockPos rightPos = blockPos_1.offset(direction.rotateYClockwise());
         BlockPos upPos = blockPos_1.up();
 
         if (world_1.getBlockEntity(blockPos_1.offset(direction)) instanceof ConveyorBlockEntity)
-            newState = newState.with(ConveyorProperties.FRONT, true);
+            conveyorBlockEntity.setFront(true);
         else
-            newState = newState.with(ConveyorProperties.FRONT, false);
+            conveyorBlockEntity.setFront(false);
 
         if (world_1.getBlockState(leftPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(leftPos).get(FACING) == direction.rotateYClockwise())
             newState = newState.with(ConveyorProperties.LEFT, true);
@@ -134,7 +168,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         else
             newState = newState.with(ConveyorProperties.RIGHT, false);
 
-        if (world_1.getBlockState(upPos).getBlock() instanceof ConveyorBlock || world_1.getBlockState(upPos).getBlock() instanceof VerticalConveyorBlock && world_1.getBlockState(upPos).get(ConveyorProperties.FRONT))
+        if (newState.get(ConveyorProperties.CASING) != Casing.NONE || world_1.getBlockState(upPos).getBlock() instanceof ConveyorBlock || world_1.getBlockState(upPos).getBlock() instanceof VerticalConveyorBlock && world_1.getBlockState(upPos).get(ConveyorProperties.FRONT))
             newState = newState.with(ConveyorProperties.UP, true);
         else
             newState = newState.with(ConveyorProperties.UP, false);
@@ -146,7 +180,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     protected void appendProperties(StateFactory.Builder<Block, BlockState> stateFactoryBuilder) {
-        stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.FRONT, ConveyorProperties.LEFT, ConveyorProperties.RIGHT, ConveyorProperties.UP});
+        stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.CASING, ConveyorProperties.LEFT, ConveyorProperties.RIGHT, ConveyorProperties.UP});
     }
 
     @Override
@@ -156,12 +190,22 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        return VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
+        VoxelShape conveyor = VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
+        if (blockState_1.get(ConveyorProperties.UP)) {
+            return VoxelShapes.fullCube();
+        }
+
+        return conveyor;
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        return VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
+        VoxelShape conveyor = VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
+        if (blockState_1.get(ConveyorProperties.UP)) {
+            return VoxelShapes.fullCube();
+        }
+
+        return conveyor;
     }
 
     @Override

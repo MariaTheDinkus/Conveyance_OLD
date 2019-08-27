@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
+    protected boolean up = false;
     protected int horizontalPosition;
     protected int prevHorizontalPosition;
 
@@ -34,7 +35,6 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
 
     private void tickConveyor() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
-        boolean up = getCachedState().get(ConveyorProperties.UP);
         boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
 
         if (!isInvEmpty() && up && getWorld().getBlockEntity(getPos().up()) instanceof VerticalConveyorBlockEntity) {
@@ -77,7 +77,16 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
         }
     }
 
-//    private void tickDown() {
+    public boolean hasUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+        markDirty();
+    }
+
+    //    private void tickDown() {
 //        Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
 //        boolean front = getCachedState().get(ConveyorProperties.FRONT);
 //        boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
@@ -164,5 +173,20 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
             this.prevHorizontalPosition = this.horizontalPosition;
 
         this.horizontalPosition = horizontalPosition;
+    }
+
+    @Override
+    public void fromTag(CompoundTag compoundTag_1) {
+        super.fromTag(compoundTag_1);
+        items.clear();
+        Inventories.fromTag(compoundTag_1, items);
+        up = compoundTag_1.getBoolean("up");
+    }
+
+    @Override
+    public CompoundTag toTag(CompoundTag compoundTag_1) {
+        Inventories.toTag(compoundTag_1, items);
+        compoundTag_1.putBoolean("up", up);
+        return super.toTag(compoundTag_1);
     }
 }

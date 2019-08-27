@@ -28,21 +28,21 @@ public class ModBlocks {
         return new BlockItem(block, new Item.Settings().group(group));
     }
 
-    private static <T extends Block> T register(String name, T block) {
+    public static <T extends Block> T register(String name, T block) {
         Registry.register(Registry.BLOCK, new Identifier(Conveyance.MODID, name), block);
         Registry.register(Registry.ITEM, Registry.BLOCK.getId(block), createBlockItem(block));
 
         return block;
     }
 
-    private static <T extends Block> T register(String name, T block, BlockItem blockItem) {
+    public static <T extends Block> T register(String name, T block, BlockItem blockItem) {
         Registry.register(Registry.BLOCK, new Identifier(Conveyance.MODID, name), block);
         Registry.register(Registry.ITEM, new Identifier(Conveyance.MODID, name), blockItem);
 
         return block;
     }
 
-    private static <T extends Block> T register(String name, T block, String itemName, BlockItem blockItem) {
+    public static <T extends Block> T register(String name, T block, String itemName, BlockItem blockItem) {
         Registry.register(Registry.BLOCK, new Identifier(Conveyance.MODID, name), block);
         Registry.register(Registry.ITEM, new Identifier(Conveyance.MODID, itemName), blockItem);
 

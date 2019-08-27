@@ -1,0 +1,30 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "block/iron_block"
+	},
+	"elements": [
+		{
+			"from": [0, 6, 1],
+			"to": [1, 15, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 14, 9]},
+			"faces": {
+				"east": {"uv": [1, 1, 15, 10], "texture": "#1"},
+				"west": {"uv": [1, 1, 15, 10], "texture": "#1"},
+				"up": {"uv": [0, 0, 1, 14], "texture": "#1"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "Glass",
+			"origin": [8, 8, 8],
+			"children": [0]
+		},
+		{
+			"name": "Glass",
+			"origin": [8, 8, 8],
+			"children": []
+		}
+	]
+}

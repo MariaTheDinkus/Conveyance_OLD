@@ -13,7 +13,7 @@
     "sources": "https://github.com/Zundrel/Conveyance"
   },
 
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/conveyance/icon.png",
 
   "environment": "*",
@@ -31,7 +31,8 @@
 
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric": "*"
+    "fabric": "*",
+	"exotic-matter": "*"
   },
   "suggests": {
     "flamingo": "*"

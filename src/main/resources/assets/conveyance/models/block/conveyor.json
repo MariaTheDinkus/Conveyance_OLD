@@ -5,8 +5,8 @@
 		"conveyor": "conveyance:block/conveyor",
 		"particle": "conveyance:block/conveyor",
 		"side": "conveyance:block/conveyor_side",
-		"right": "conveyance:block/roller_r",
-		"left": "conveyance:block/roller_l"
+		"right": "conveyance:block/roller_right",
+		"left": "conveyance:block/roller_left"
 	},
 	"elements": [
 		{
@@ -17,9 +17,7 @@
 				"north": {"uv": [0, 1, 16, 3], "rotation": 180, "texture": "#conveyor"},
 				"east": {"uv": [15, 1, 16, 3], "rotation": 180, "texture": "#conveyor"},
 				"south": {"uv": [0, 5, 16, 7], "rotation": 180, "texture": "#conveyor"},
-				"west": {"uv": [0, 1, 1, 3], "rotation": 180, "texture": "#conveyor"},
-				"up": {"uv": [0, 0, 16, 1], "texture": "#missing"},
-				"down": {"uv": [0, 0, 16, 1], "texture": "#missing"}
+				"west": {"uv": [0, 1, 1, 3], "rotation": 180, "texture": "#conveyor"}
 			}
 		},
 		{
@@ -69,9 +67,7 @@
 				"north": {"uv": [0, 1, 16, 3], "texture": "#conveyor"},
 				"east": {"uv": [15, 1, 16, 3], "texture": "#conveyor"},
 				"south": {"uv": [0, 1, 16, 3], "texture": "#conveyor"},
-				"west": {"uv": [0, 1, 1, 3], "texture": "#conveyor"},
-				"up": {"uv": [0, 0, 16, 1], "texture": "#missing"},
-				"down": {"uv": [0, 0, 16, 1], "texture": "#missing"}
+				"west": {"uv": [0, 1, 1, 3], "texture": "#conveyor"}
 			}
 		},
 		{
