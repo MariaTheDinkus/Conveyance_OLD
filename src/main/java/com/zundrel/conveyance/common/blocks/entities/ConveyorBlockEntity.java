@@ -141,14 +141,6 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
         this.position = position;
     }
 
-    public void setReversePosition(int position) {
-        if (position == 0)
-            this.prevPosition = 0;
-        else
-            this.prevPosition = position;
-        this.position = prevPosition;
-    }
-
     @Override
     public DefaultedList<ItemStack> getItems() {
         return items;

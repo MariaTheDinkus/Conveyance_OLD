@@ -2,6 +2,7 @@ package com.zundrel.conveyance.common.items;
 
 import com.zundrel.conveyance.api.IWrenchable;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;

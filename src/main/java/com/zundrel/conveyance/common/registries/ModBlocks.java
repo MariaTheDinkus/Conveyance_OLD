@@ -4,6 +4,7 @@ import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.ConveyorBlock;
 import com.zundrel.conveyance.common.blocks.DownVerticalConveyorBlock;
 import com.zundrel.conveyance.common.blocks.VerticalConveyorBlock;
+import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
@@ -18,9 +19,9 @@ public class ModBlocks {
     public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR;
 
     public static void init() {
-        CONVEYOR = register("conveyor", new ConveyorBlock(Block.Settings.copy(Blocks.IRON_BLOCK)));
-        VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(Block.Settings.copy(Blocks.IRON_BLOCK)));
-        DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(Block.Settings.copy(Blocks.IRON_BLOCK)));
+        CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+        VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+        DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
     }
 
     private static BlockItem createBlockItem(Block block) {

@@ -1,22 +1,11 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.ConveyorProperties;
-import com.zundrel.conveyance.common.inventory.ConveyorInventory;
 import com.zundrel.conveyance.common.registries.ModBlockEntities;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.DefaultedList;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -35,10 +24,6 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
 
     @Override
     public void tick() {
-        tickConveyor();
-    }
-
-    private void tickConveyor() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
         boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
 
@@ -118,14 +103,6 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
             this.prevHorizontalPosition = this.horizontalPosition;
 
         this.horizontalPosition = horizontalPosition;
-    }
-
-    public void setReverseHorizontalPosition(int position) {
-        this.horizontalPosition = prevHorizontalPosition;
-        if (position == 0)
-            this.prevHorizontalPosition = 0;
-        else
-            this.prevHorizontalPosition = position;
     }
 
     @Override

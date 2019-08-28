@@ -1,12 +1,10 @@
 package com.zundrel.conveyance.common.blocks;
 
-import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.api.Casing;
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
-import com.zundrel.conveyance.common.registries.ModBlocks;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
