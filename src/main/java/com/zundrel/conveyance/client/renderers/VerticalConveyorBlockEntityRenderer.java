@@ -3,7 +3,7 @@ package com.zundrel.conveyance.client.renderers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.zundrel.conveyance.api.IConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
-import net.minecraft.block.*;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
