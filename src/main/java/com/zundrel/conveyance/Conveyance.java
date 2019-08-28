@@ -1,6 +1,8 @@
 package com.zundrel.conveyance;
 
-import com.zundrel.conveyance.common.registries.*;
+import com.zundrel.conveyance.common.registries.ModBlockEntities;
+import com.zundrel.conveyance.common.registries.ModBlocks;
+import com.zundrel.conveyance.common.registries.ModItems;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;

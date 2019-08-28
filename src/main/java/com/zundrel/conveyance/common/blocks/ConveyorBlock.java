@@ -39,11 +39,6 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
     public void onWrenched(World world, BlockState state, BlockPos pos, PlayerEntity player) {
         if (!player.isSneaking())
             world.setBlockState(pos, state.with(FACING, state.get(FACING).rotateYClockwise()));
@@ -79,44 +74,6 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         Direction direction = blockState_1.get(FACING);
 
         MovementUtilities.pushEntity(entity_1, blockPos_1, 0.125F, direction);
-    }
-
-    @Override
-    public boolean activate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1) {
-        ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1);
-
-        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) instanceof IConveyor || playerEntity_1.getStackInHand(hand_1).getItem() instanceof WrenchItem))
-            return false;
-
-        if (blockState_1.get(ConveyorProperties.CASING) == Casing.NONE && !playerEntity_1.getStackInHand(hand_1).isEmpty()) {
-            if (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) == Blocks.GLASS) {
-                world_1.setBlockState(blockPos_1, blockState_1.with(ConveyorProperties.CASING, Casing.GLASS));
-                if (!playerEntity_1.isCreative())
-                    playerEntity_1.getStackInHand(hand_1).decrement(1);
-
-                return true;
-            } else if (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) == Blocks.IRON_BLOCK) {
-                world_1.setBlockState(blockPos_1, blockState_1.with(ConveyorProperties.CASING, Casing.OPAQUE));
-                if (!playerEntity_1.isCreative())
-                    playerEntity_1.getStackInHand(hand_1).decrement(1);
-
-                return true;
-            }
-        }
-
-        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && blockEntity.getInvStack(0).isEmpty()) {
-            blockEntity.setInvStack(0, playerEntity_1.getStackInHand(hand_1));
-            playerEntity_1.setStackInHand(hand_1, ItemStack.EMPTY);
-
-            return true;
-        } else if (!blockEntity.getInvStack(0).isEmpty()) {
-            playerEntity_1.inventory.offerOrDrop(world_1, blockEntity.getInvStack(0));
-            blockEntity.removeInvStack(0);
-
-            return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -197,6 +154,44 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
+    public boolean activate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1) {
+        ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1);
+
+        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) instanceof IConveyor || playerEntity_1.getStackInHand(hand_1).getItem() instanceof WrenchItem))
+            return false;
+
+        if (blockState_1.get(ConveyorProperties.CASING) == Casing.NONE && !playerEntity_1.getStackInHand(hand_1).isEmpty()) {
+            if (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) == Blocks.GLASS) {
+                world_1.setBlockState(blockPos_1, blockState_1.with(ConveyorProperties.CASING, Casing.GLASS));
+                if (!playerEntity_1.isCreative())
+                    playerEntity_1.getStackInHand(hand_1).decrement(1);
+
+                return true;
+            } else if (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) == Blocks.IRON_BLOCK) {
+                world_1.setBlockState(blockPos_1, blockState_1.with(ConveyorProperties.CASING, Casing.OPAQUE));
+                if (!playerEntity_1.isCreative())
+                    playerEntity_1.getStackInHand(hand_1).decrement(1);
+
+                return true;
+            }
+        }
+
+        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && blockEntity.getInvStack(0).isEmpty()) {
+            blockEntity.setInvStack(0, playerEntity_1.getStackInHand(hand_1));
+            playerEntity_1.setStackInHand(hand_1, ItemStack.EMPTY);
+
+            return true;
+        } else if (!blockEntity.getInvStack(0).isEmpty()) {
+            playerEntity_1.inventory.offerOrDrop(world_1, blockEntity.getInvStack(0));
+            blockEntity.removeInvStack(0);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     protected void appendProperties(StateFactory.Builder<Block, BlockState> stateFactoryBuilder) {
         stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.CASING, ConveyorProperties.LEFT, ConveyorProperties.RIGHT, ConveyorProperties.UP});
     }
@@ -204,6 +199,16 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext_1) {
         return this.getDefaultState().with(FACING, itemPlacementContext_1.getPlayer().isSneaking() ? itemPlacementContext_1.getPlayerFacing().getOpposite() : itemPlacementContext_1.getPlayerFacing());
+    }
+
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
+    public boolean isOpaque(BlockState blockState_1) {
+        return false;
     }
 
     @Override
@@ -224,10 +229,5 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         }
 
         return conveyor;
-    }
-
-    @Override
-    public boolean isOpaque(BlockState blockState_1) {
-        return false;
     }
 }

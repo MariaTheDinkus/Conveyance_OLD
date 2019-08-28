@@ -13,7 +13,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.BooleanBiFunction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
@@ -33,28 +32,13 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView blockView) {
-        return new VerticalConveyorBlockEntity();
-    }
-
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
     public void onWrenched(World world, BlockState state, BlockPos pos, PlayerEntity player) {
         world.setBlockState(pos, state.with(FACING, state.get(FACING).rotateYClockwise()));
     }
 
     @Override
-    public boolean hasComparatorOutput(BlockState blockState_1) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorOutput(BlockState blockState_1, World world_1, BlockPos blockPos_1) {
-        return ((ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1)).isInvEmpty() ? 0 : 15;
+    public BlockEntity createBlockEntity(BlockView blockView) {
+        return new VerticalConveyorBlockEntity();
     }
 
     @Override
@@ -128,6 +112,16 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     }
 
     @Override
+    public boolean hasComparatorOutput(BlockState blockState_1) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput(BlockState blockState_1, World world_1, BlockPos blockPos_1) {
+        return ((ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1)).isInvEmpty() ? 0 : 15;
+    }
+
+    @Override
     protected void appendProperties(StateFactory.Builder<Block, BlockState> stateFactoryBuilder) {
         stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.FRONT, ConveyorProperties.CONVEYOR});
     }
@@ -138,9 +132,19 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     }
 
     @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
+    public boolean isOpaque(BlockState blockState_1) {
+        return false;
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        Box box1 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING).getOpposite());
-        Box box2 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING).getOpposite());
+        Box box1 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING));
+        Box box2 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING));
 
         if (blockState_1.get(ConveyorProperties.FRONT)) {
             return VoxelShapes.union(VoxelShapes.cuboid(box1), VoxelShapes.cuboid(box2));
@@ -151,18 +155,13 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
 
     @Override
     public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        Box box1 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING).getOpposite());
-        Box box2 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING).getOpposite());
+        Box box1 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING));
+        Box box2 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING));
 
         if (blockState_1.get(ConveyorProperties.FRONT)) {
             return VoxelShapes.union(VoxelShapes.cuboid(box1), VoxelShapes.cuboid(box2));
         } else {
             return VoxelShapes.cuboid(box2);
         }
-    }
-
-    @Override
-    public boolean isOpaque(BlockState blockState_1) {
-        return false;
     }
 }

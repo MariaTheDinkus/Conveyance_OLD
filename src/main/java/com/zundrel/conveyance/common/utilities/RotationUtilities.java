@@ -5,7 +5,6 @@ import net.minecraft.util.math.Direction;
 
 public class RotationUtilities {
 	public static Box getRotatedBoundingBox(Box def, Direction facing) {
-	    facing = facing.getOpposite();
 		def.offset(-0.5, -0.5, -0.5);
 		switch (facing) {
 			case SOUTH:

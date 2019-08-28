@@ -1,6 +1,5 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.inventory.ConveyorInventory;
 import com.zundrel.conveyance.common.registries.ModBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -17,8 +16,6 @@ import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-
-import java.util.Random;
 
 public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity, ConveyorInventory, Tickable {
     protected final DefaultedList<ItemStack> items = DefaultedList.ofSize(1, ItemStack.EMPTY);
