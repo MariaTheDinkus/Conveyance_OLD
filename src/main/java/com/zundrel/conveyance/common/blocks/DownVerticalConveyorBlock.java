@@ -57,7 +57,7 @@ public class DownVerticalConveyorBlock extends VerticalConveyorBlock {
         } else
             conveyorBlockEntity.setDown(false);
 
-        if (world_1.isAir(blockPos_1.up()) && world_1.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(conveyorPos).get(FACING) == direction.getOpposite())
+        if (world_1.getBlockState(blockPos_1.up()).isAir() && world_1.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(conveyorPos).get(FACING) == direction.getOpposite())
             newState = newState.with(ConveyorProperties.CONVEYOR, true);
         else
             newState = newState.with(ConveyorProperties.CONVEYOR, false);

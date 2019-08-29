@@ -36,7 +36,11 @@ repositories {
         credentials {
             username "guest"
             password ""
-	}
+		}
+    }
+	maven {
+        name = "BuildCraft"
+        url = "https://mod-buildcraft.com/maven"
     }
 }
 
@@ -55,19 +59,9 @@ dependencies {
 	
 	modCompile "io.github.prospector:modmenu:${project.modmenu}"
 	
-	modImplementation ("grondag:exotic-matter:${project.exotic_matter}.+") {
-        exclude group :"net.fabricmc.fabric-api"
-        exclude group :"io.github.prospector.modmenu"
-    }
-
-    // recommended but not required
-    modRuntime ("grondag:canvas:${project.canvas}.+") {
-        exclude group :"net.fabricmc.fabric-api"
-        exclude group :"io.github.prospector.modmenu"
-    }
-	
-	compile "org.apiguardian:apiguardian-api:1.0.0"
-	compile "com.google.code.findbugs:jsr305:3.0.2"
+	modCompile "alexiil.mc.lib:libblockattributes-items:0.4.12"
+	include "alexiil.mc.lib:libblockattributes-core:0.4.12"
+	include "alexiil.mc.lib:libblockattributes-items:0.4.12"
 }
 
 processResources {

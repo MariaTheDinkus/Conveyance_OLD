@@ -1,6 +1,6 @@
 package com.zundrel.conveyance.client.renderers;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.zundrel.conveyance.api.IConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.ConveyorProperties;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
@@ -17,39 +17,39 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
         boolean front = blockEntity.getCachedState().get(ConveyorProperties.FRONT);
 
         if (conveyor && blockEntity.isInvEmpty()) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             setProperties(blockEntity, x, y, z, direction);
-            GlStateManager.translated(0, (15F / 16F), 0);
+            RenderSystem.translated(0, (15F / 16F), 0);
             renderSupport(blockEntity);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         } else if (conveyor && !front && !blockEntity.isInvEmpty() && blockEntity.getPosition() > 16) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             setProperties(blockEntity, x, y, z, direction);
 
             float offset = -32;
             float speed = 1;
             float supportPosition = ((blockEntity.getRenderAttachmentData()[1] / speed) + offset) + (((blockEntity.getRenderAttachmentData()[0] / speed) + offset) - ((blockEntity.getRenderAttachmentData()[1] / speed) + offset)) * partialTicks;
 
-            GlStateManager.translated(((supportPosition) / 32F), (15F / 16F), 0);
+            RenderSystem.translated(((supportPosition) / 32F), (15F / 16F), 0);
             renderSupport(blockEntity);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         } else if (conveyor && front && !blockEntity.isInvEmpty() && blockEntity.getHorizontalPosition() > 0) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             setProperties(blockEntity, x, y, z, direction);
 
             float offset = -16;
             float speed = 1;
             float supportPosition = ((blockEntity.getRenderAttachmentData()[3] / speed) + offset) + (((blockEntity.getRenderAttachmentData()[2] / speed) + offset) - ((blockEntity.getRenderAttachmentData()[3] / speed) + offset)) * partialTicks;
 
-            GlStateManager.translated(((supportPosition) / 32F), (15F / 16F), 0);
+            RenderSystem.translated(((supportPosition) / 32F), (15F / 16F), 0);
             renderSupport(blockEntity);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
-        if (!blockEntity.getWorld().isAir(blockEntity.getPos()) && !blockEntity.isInvEmpty()) {
+        if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isInvEmpty()) {
             ItemStack stack = blockEntity.getInvStack(0);
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 
             setProperties(blockEntity, x, y, z, direction);
 
@@ -57,15 +57,13 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
             float horizontalPosition = (blockEntity.getRenderAttachmentData()[3] + (blockEntity.getRenderAttachmentData()[2] - blockEntity.getRenderAttachmentData()[3]) * partialTicks);
             float verticalOffset = conveyor ? 1 : 0;
 
-            GlStateManager.translated((horizontalPosition / 16F), (position / 16F) + verticalOffset, 0);
-
-            //Conveyance.LOGGER.info(position);
+            RenderSystem.translated((horizontalPosition / 16F), (position / 16F) + verticalOffset, 0);
 
             renderSupport(blockEntity);
 
             renderItem(stack);
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 }

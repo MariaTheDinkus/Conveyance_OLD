@@ -2,6 +2,8 @@ package com.zundrel.conveyance.common.utilities;
 
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 
 public class RotationUtilities {
 	public static Box getRotatedBoundingBox(Box def, Direction facing) {
@@ -19,4 +21,8 @@ public class RotationUtilities {
 		def.offset(0.5, 0.5, 0.5);
 		return def;
 	}
+
+    public static VoxelShape getRotatedShape(Box def, Direction facing) {
+        return VoxelShapes.cuboid(getRotatedBoundingBox(def, facing));
+    }
 }

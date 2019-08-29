@@ -101,7 +101,7 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
         else
             conveyorBlockEntity.setUp(false);
 
-        if (!conveyorBlockEntity.hasUp() && world_1.isAir(upPos) && world_1.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(conveyorPos).get(FACING) == direction)
+        if (!conveyorBlockEntity.hasUp() && world_1.getBlockState(upPos).isAir() && world_1.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world_1.getBlockState(conveyorPos).get(FACING) == direction)
             newState = newState.with(ConveyorProperties.CONVEYOR, true);
         else
             newState = newState.with(ConveyorProperties.CONVEYOR, false);
@@ -142,26 +142,14 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        Box box1 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING));
-        Box box2 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING));
-
-        if (blockState_1.get(ConveyorProperties.FRONT)) {
-            return VoxelShapes.union(VoxelShapes.cuboid(box1), VoxelShapes.cuboid(box2));
-        } else {
-            return VoxelShapes.cuboid(box2);
-        }
-    }
-
-    @Override
     public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        Box box1 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING));
-        Box box2 = RotationUtilities.getRotatedBoundingBox(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING));
+        VoxelShape box1 = RotationUtilities.getRotatedShape(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState_1.get(FACING));
+        VoxelShape box2 = RotationUtilities.getRotatedShape(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState_1.get(FACING));
 
         if (blockState_1.get(ConveyorProperties.FRONT)) {
-            return VoxelShapes.union(VoxelShapes.cuboid(box1), VoxelShapes.cuboid(box2));
+            return VoxelShapes.union(box1, box2);
         } else {
-            return VoxelShapes.cuboid(box2);
+            return box1;
         }
     }
 }

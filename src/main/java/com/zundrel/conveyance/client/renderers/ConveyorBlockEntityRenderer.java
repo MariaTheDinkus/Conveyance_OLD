@@ -1,6 +1,6 @@
 package com.zundrel.conveyance.client.renderers;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.zundrel.conveyance.api.Casing;
 import com.zundrel.conveyance.api.IConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.ConveyorBlock;
@@ -21,20 +21,20 @@ public class ConveyorBlockEntityRenderer extends BlockEntityRenderer<ConveyorBlo
 
         if (casing == Casing.OPAQUE && !left && !right && (blockEntity.hasFront() && (getWorld().getBlockState(blockEntity.getPos().offset(direction)).getBlock() instanceof ConveyorBlock && getWorld().getBlockState(blockEntity.getPos().offset(direction)).get(ConveyorProperties.CASING) == Casing.OPAQUE))) {
 
-        } else if (!blockEntity.getWorld().isAir(blockEntity.getPos()) && !blockEntity.isInvEmpty()) {
+        } else if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isInvEmpty()) {
             ItemStack stack = blockEntity.getInvStack(0);
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 
             setProperties(blockEntity, x, y, z, direction);
 
             float position = blockEntity.getRenderAttachmentData()[1] + (blockEntity.getRenderAttachmentData()[0] - blockEntity.getRenderAttachmentData()[1]) * partialTicks;
 
-            GlStateManager.translated((position / 16F), 0, 0);
+            RenderSystem.translated((position / 16F), 0, 0);
 
             renderItem(stack);
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 

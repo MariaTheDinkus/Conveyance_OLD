@@ -212,16 +212,6 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        VoxelShape conveyor = VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
-        if (blockState_1.get(ConveyorProperties.UP)) {
-            return VoxelShapes.fullCube();
-        }
-
-        return conveyor;
-    }
-
-    @Override
     public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
         VoxelShape conveyor = VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
         if (blockState_1.get(ConveyorProperties.UP)) {
