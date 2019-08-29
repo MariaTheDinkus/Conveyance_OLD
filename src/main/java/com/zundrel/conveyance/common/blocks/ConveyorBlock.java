@@ -60,7 +60,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     public int getComparatorOutput(BlockState blockState_1, World world_1, BlockPos blockPos_1) {
-        return ((ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1)).isInvEmpty() ? 0 : 15;
+        return ((ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1)).isEmpty() ? 0 : 15;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         if (blockState_1.getBlock() != blockState_2.getBlock()) {
             BlockEntity blockEntity_1 = world_1.getBlockEntity(blockPos_1);
             if (blockEntity_1 instanceof ConveyorBlockEntity) {
-                ItemScatterer.spawn(world_1, blockPos_1, (ConveyorBlockEntity) blockEntity_1);
+                ItemScatterer.spawn(world_1, blockPos_1.getX(), blockPos_1.getY(), blockPos_1.getZ(), ((ConveyorBlockEntity) blockEntity_1).getStack());
                 world_1.updateHorizontalAdjacent(blockPos_1, this);
             }
 
@@ -176,14 +176,14 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
             }
         }
 
-        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && blockEntity.getInvStack(0).isEmpty()) {
-            blockEntity.setInvStack(0, playerEntity_1.getStackInHand(hand_1));
+        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && blockEntity.isEmpty()) {
+            blockEntity.setStack(playerEntity_1.getStackInHand(hand_1));
             playerEntity_1.setStackInHand(hand_1, ItemStack.EMPTY);
 
             return true;
-        } else if (!blockEntity.getInvStack(0).isEmpty()) {
-            playerEntity_1.inventory.offerOrDrop(world_1, blockEntity.getInvStack(0));
-            blockEntity.removeInvStack(0);
+        } else if (!blockEntity.isEmpty()) {
+            playerEntity_1.inventory.offerOrDrop(world_1, blockEntity.getStack());
+            blockEntity.removeStack();
 
             return true;
         }

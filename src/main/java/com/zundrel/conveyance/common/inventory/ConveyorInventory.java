@@ -51,6 +51,11 @@ import net.minecraft.util.DefaultedList;
             }
             return true;
         }
+
+        default boolean isEmpty() {
+            return isInvEmpty();
+        }
+
         /**
          * Gets the item in the slot.
          */
@@ -58,6 +63,11 @@ import net.minecraft.util.DefaultedList;
         default ItemStack getInvStack(int slot) {
             return getItems().get(slot);
         }
+
+        default ItemStack getStack() {
+            return getInvStack( 0);
+        }
+
         /**
          * Takes a stack of the size from the slot.
          * <p>(default implementation) If there are less items in the slot than what are requested,
@@ -80,6 +90,11 @@ import net.minecraft.util.DefaultedList;
             markDirty();
             return stack;
         }
+
+        default ItemStack removeStack() {
+            return removeInvStack(0);
+        }
+
         /**
          * Replaces the current stack in the {@code slot} with the provided stack.
          * <p>If the stack is too big for this inventory ({@link Inventory#getInvMaxStackAmount()}),
@@ -93,6 +108,11 @@ import net.minecraft.util.DefaultedList;
             }
             markDirty();
         }
+
+        default void setStack(ItemStack stack) {
+            setInvStack(0, stack);
+        }
+
         /**
          * Clears {@linkplain #getItems() the item list}}.
          */

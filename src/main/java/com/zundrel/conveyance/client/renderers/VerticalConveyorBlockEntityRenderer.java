@@ -11,8 +11,8 @@ import net.minecraft.util.math.Direction;
 public class VerticalConveyorBlockEntityRenderer extends BlockEntityRenderer<VerticalConveyorBlockEntity> implements IConveyorRenderer<VerticalConveyorBlockEntity> {
     @Override
     public void render(VerticalConveyorBlockEntity blockEntity, double x, double y, double z, float partialTicks, int destroyStage) {
-        if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isInvEmpty()) {
-            ItemStack stack = blockEntity.getInvStack(0);
+        if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isEmpty()) {
+            ItemStack stack = blockEntity.getStack();
             Direction direction = blockEntity.getCachedState().get(HorizontalFacingBlock.FACING);
 
             RenderSystem.pushMatrix();

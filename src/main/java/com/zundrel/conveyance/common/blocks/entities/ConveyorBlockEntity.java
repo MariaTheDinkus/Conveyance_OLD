@@ -4,21 +4,20 @@ import com.zundrel.conveyance.common.inventory.ConveyorInventory;
 import com.zundrel.conveyance.common.registries.ModBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity, ConveyorInventory, Tickable {
-    protected final DefaultedList<ItemStack> items = DefaultedList.ofSize(1, ItemStack.EMPTY);
+public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClientSerializable, ConveyorInventory, RenderAttachmentBlockEntity, Tickable {
+    private DefaultedList<ItemStack> items = DefaultedList.ofSize(1, ItemStack.EMPTY);
     protected boolean front = false;
     protected boolean down = false;
     protected boolean across = false;
@@ -37,24 +36,26 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
     public void tick() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
 
-        if (!isInvEmpty() && front && across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity && getWorld().getBlockEntity(getPos().offset(direction).offset(direction)) instanceof ConveyorBlockEntity) {
+        if (!isEmpty() && front && across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity && getWorld().getBlockEntity(getPos().offset(direction).offset(direction)) instanceof ConveyorBlockEntity) {
             advancePositionAcross(getPos().offset(direction));
-        } else if (!isInvEmpty() && front && !across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity) {
+        } else if (!isEmpty() && front && !across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity) {
             advancePosition(getPos().offset(direction));
-        } else if (!isInvEmpty() && down && getWorld().getBlockEntity(getPos().offset(direction).down()) instanceof DownVerticalConveyorBlockEntity) {
+        } else if (!isEmpty() && down && getWorld().getBlockEntity(getPos().offset(direction).down()) instanceof DownVerticalConveyorBlockEntity) {
             advancePosition(getPos().offset(direction).down());
-        } else if (position > 0) {
+        } else if (!isEmpty() && position > 0) {
             setPosition(Math.max(0, position - 4));
+        } else if (isEmpty() && position > 0) {
+            setPosition(0);
         }
     }
 
     public void advancePosition(BlockPos pos) {
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
-        boolean empty = conveyorBlockEntity.isInvEmpty();
+        boolean empty = conveyorBlockEntity.isEmpty();
 
-        if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isInvEmpty()) {
-            conveyorBlockEntity.setInvStack(0, getInvStack(0));
-            removeInvStack(0);
+        if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isEmpty()) {
+            conveyorBlockEntity.setStack(getStack());
+            removeStack();
         }
 
         if (empty && this.position < 16 || !empty && this.position < 16 && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
@@ -63,7 +64,7 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
             prevPosition = this.position;
         }
 
-        if (this.position > 0 && !conveyorBlockEntity.isInvEmpty() && conveyorBlockEntity.getPosition() == 0) {
+        if (this.position > 0 && !conveyorBlockEntity.isEmpty() && conveyorBlockEntity.getPosition() == 0) {
             setPosition(Math.max(0, this.position - 4));
         }
     }
@@ -72,11 +73,11 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
         ConveyorBlockEntity acrossBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos.offset(direction));
-        boolean empty = conveyorBlockEntity.isInvEmpty();
+        boolean empty = conveyorBlockEntity.isEmpty();
 
-        if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isInvEmpty()) {
-            conveyorBlockEntity.setInvStack(0, getInvStack(0));
-            removeInvStack(0);
+        if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isEmpty()) {
+            conveyorBlockEntity.setStack(getStack());
+            removeStack();
         }
 
         if (empty && acrossBlockEntity.getPosition() == 0 && this.position < 16 || !empty && acrossBlockEntity.getPosition() == 0 && this.position < 16 && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
@@ -85,7 +86,7 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
             prevPosition = this.position;
         }
 
-        if (this.position > 0 && !conveyorBlockEntity.isInvEmpty() && conveyorBlockEntity.getPosition() == 0) {
+        if (this.position > 0 && !conveyorBlockEntity.isEmpty() && conveyorBlockEntity.getPosition() == 0) {
             setPosition(Math.max(0, this.position - 4));
         }
     }
@@ -143,21 +144,22 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
         return items;
     }
 
+    public void sync() {
+        if (world instanceof ServerWorld) {
+            ((ServerWorld)world).method_14178().markForUpdate(pos);
+        }
+    }
+
     @Override
     public void markDirty() {
         super.markDirty();
-        if (world != null && !world.isClient) {
-            for (Object obj : PlayerStream.watching(this).toArray()) {
-                ServerPlayerEntity player = (ServerPlayerEntity) obj;
-                player.networkHandler.sendPacket(this.toUpdatePacket());
-            }
-        }
+        sync();
     }
 
     @Override
     public void fromTag(CompoundTag compoundTag_1) {
         super.fromTag(compoundTag_1);
-        items.clear();
+        clear();
         Inventories.fromTag(compoundTag_1, items);
         front = compoundTag_1.getBoolean("front");
         down = compoundTag_1.getBoolean("down");
@@ -176,6 +178,11 @@ public class ConveyorBlockEntity extends BlockEntity implements BlockEntityClien
         compoundTag_1.putBoolean("down", down);
         compoundTag_1.putBoolean("across", across);
         return super.toTag(compoundTag_1);
+    }
+
+    @Override
+    public CompoundTag toInitialChunkDataTag() {
+        return toTag(new CompoundTag());
     }
 
     @Override

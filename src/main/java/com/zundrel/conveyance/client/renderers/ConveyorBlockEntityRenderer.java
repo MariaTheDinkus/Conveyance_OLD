@@ -21,8 +21,8 @@ public class ConveyorBlockEntityRenderer extends BlockEntityRenderer<ConveyorBlo
 
         if (casing == Casing.OPAQUE && !left && !right && (blockEntity.hasFront() && (getWorld().getBlockState(blockEntity.getPos().offset(direction)).getBlock() instanceof ConveyorBlock && getWorld().getBlockState(blockEntity.getPos().offset(direction)).get(ConveyorProperties.CASING) == Casing.OPAQUE))) {
 
-        } else if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isInvEmpty()) {
-            ItemStack stack = blockEntity.getInvStack(0);
+        } else if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isEmpty()) {
+            ItemStack stack = blockEntity.getStack();
 
             RenderSystem.pushMatrix();
 

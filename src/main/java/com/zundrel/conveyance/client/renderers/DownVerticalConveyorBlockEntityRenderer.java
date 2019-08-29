@@ -16,13 +16,13 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
         boolean conveyor = blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR);
         boolean front = blockEntity.getCachedState().get(ConveyorProperties.FRONT);
 
-        if (conveyor && blockEntity.isInvEmpty()) {
+        if (conveyor && blockEntity.isEmpty()) {
             RenderSystem.pushMatrix();
             setProperties(blockEntity, x, y, z, direction);
             RenderSystem.translated(0, (15F / 16F), 0);
             renderSupport(blockEntity);
             RenderSystem.popMatrix();
-        } else if (conveyor && !front && !blockEntity.isInvEmpty() && blockEntity.getPosition() > 16) {
+        } else if (conveyor && !front && !blockEntity.isEmpty() && blockEntity.getPosition() > 16) {
             RenderSystem.pushMatrix();
             setProperties(blockEntity, x, y, z, direction);
 
@@ -33,7 +33,7 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
             RenderSystem.translated(((supportPosition) / 32F), (15F / 16F), 0);
             renderSupport(blockEntity);
             RenderSystem.popMatrix();
-        } else if (conveyor && front && !blockEntity.isInvEmpty() && blockEntity.getHorizontalPosition() > 0) {
+        } else if (conveyor && front && !blockEntity.isEmpty() && blockEntity.getHorizontalPosition() > 0) {
             RenderSystem.pushMatrix();
             setProperties(blockEntity, x, y, z, direction);
 
@@ -46,8 +46,8 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
             RenderSystem.popMatrix();
         }
 
-        if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isInvEmpty()) {
-            ItemStack stack = blockEntity.getInvStack(0);
+        if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isEmpty()) {
+            ItemStack stack = blockEntity.getStack();
 
             RenderSystem.pushMatrix();
 
