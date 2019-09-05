@@ -51,18 +51,6 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	modCompile "me.shedaniel.cloth:config-2:1.0.0"
-	modCompile "me.sargunvohra.mcmods:auto-config:1.2.0+mc1.14.4"
-	
-	include "me.shedaniel.cloth:config-2:${project.cloth_config}"
-	include "me.sargunvohra.mcmods:auto-config:${project.auto_config}"
-	
-	modCompile "io.github.prospector:modmenu:${project.modmenu}"
-	
-	modCompile "alexiil.mc.lib:libblockattributes-items:0.4.12"
-	include "alexiil.mc.lib:libblockattributes-core:0.4.12"
-	include "alexiil.mc.lib:libblockattributes-items:0.4.12"
 	
 	modCompile curse.resolve("wrenchable", "2778557")
 	include curse.resolve("wrenchable", "2778557")
@@ -72,6 +60,12 @@ dependencies {
         exclude group :"net.fabricmc.fabric-api"
     }
     include "grondag:fermion-modkeys:${project.fermion_modkeys_version}.+"
+	
+	modRuntime ("me.shedaniel:RoughlyEnoughItems:3.0-pre+build.1") {
+		exclude group: 'io.github.prospector.modmenu', module: 'ModMenu'
+	}
+	
+	modCompile "io.github.prospector:modmenu:${project.modmenu}"
 }
 
 processResources {
