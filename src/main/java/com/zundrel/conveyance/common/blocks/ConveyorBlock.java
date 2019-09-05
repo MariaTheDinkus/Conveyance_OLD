@@ -6,6 +6,9 @@ import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
+import com.zundrel.wrenchable.wrench.BlockWrenchable;
+import com.zundrel.wrenchable.wrench.WrenchableUtilities;
+import grondag.fermion.modkeys.api.ModKeys;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -26,7 +29,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityProvider, IConveyor {
+public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityProvider, BlockWrenchable, IConveyor {
     public ConveyorBlock(Settings settings) {
         super(settings);
 
@@ -39,18 +42,27 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public void onWrenched(World world, BlockState state, BlockPos pos, PlayerEntity player) {
-        if (!player.isSneaking())
-            world.setBlockState(pos, state.with(FACING, state.get(FACING).rotateYClockwise()));
-        else if (state.get(ConveyorProperties.CASING) == Casing.GLASS) {
-            world.setBlockState(pos, state.with(ConveyorProperties.CASING, Casing.NONE));
-            if (!player.isCreative())
-                player.inventory.offerOrDrop(world, new ItemStack(Blocks.GLASS));
-        } else if (state.get(ConveyorProperties.CASING) == Casing.OPAQUE) {
-            world.setBlockState(pos, state.with(ConveyorProperties.CASING, Casing.NONE));
-            if (!player.isCreative())
-                player.inventory.offerOrDrop(world, new ItemStack(Blocks.IRON_BLOCK));
+    public void onWrenched(World world, PlayerEntity player, BlockHitResult result) {
+        BlockPos pos = result.getBlockPos();
+        BlockState state = world.getBlockState(pos);
+
+        if (ModKeys.isControlPressed(player)) {
+            if (state.get(ConveyorProperties.CASING) == Casing.GLASS) {
+                world.setBlockState(pos, state.with(ConveyorProperties.CASING, Casing.NONE));
+                if (!player.isCreative())
+                    player.inventory.offerOrDrop(world, new ItemStack(Blocks.GLASS));
+
+                return;
+            } else if (state.get(ConveyorProperties.CASING) == Casing.OPAQUE) {
+                world.setBlockState(pos, state.with(ConveyorProperties.CASING, Casing.NONE));
+                if (!player.isCreative())
+                    player.inventory.offerOrDrop(world, new ItemStack(Blocks.IRON_BLOCK));
+
+                return;
+            }
         }
+
+        WrenchableUtilities.doHorizontalFacingBehavior(world, player, result);
     }
 
     @Override

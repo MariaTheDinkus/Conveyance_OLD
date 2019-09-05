@@ -1,5 +1,6 @@
 package com.zundrel.conveyance.api;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zundrel.conveyance.common.blocks.ConveyorProperties;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
@@ -8,7 +9,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -147,7 +147,7 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
                     RenderSystem.enableRescaleNormal();
                     RenderSystem.alphaFunc(516, 0.1F);
                     RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(class_4493.class_4535.SRC_ALPHA.value, class_4493.class_4535.ONE_MINUS_SRC_ALPHA.value, class_4493.class_4535.ONE.value, class_4493.class_4535.ZERO.value);
+                    RenderSystem.blendFuncSeparate(GlStateManager.class_4535.SRC_ALPHA.value, GlStateManager.class_4535.ONE_MINUS_SRC_ALPHA.value, GlStateManager.class_4535.ONE.value, GlStateManager.class_4535.ZERO.value);
                 }
 
                 for (int i = 0; i < int_1; i++) {

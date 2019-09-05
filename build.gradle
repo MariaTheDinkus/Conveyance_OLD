@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '0.2.5-SNAPSHOT'
 	id 'maven-publish'
+	id "com.wynprice.cursemaven" version "1.2.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -62,6 +63,15 @@ dependencies {
 	modCompile "alexiil.mc.lib:libblockattributes-items:0.4.12"
 	include "alexiil.mc.lib:libblockattributes-core:0.4.12"
 	include "alexiil.mc.lib:libblockattributes-items:0.4.12"
+	
+	modCompile curse.resolve("wrenchable", "2778557")
+	include curse.resolve("wrenchable", "2778557")
+	
+	modImplementation ("grondag:fermion-modkeys:${project.fermion_modkeys_version}.+") {
+        exclude group :"grondag"
+        exclude group :"net.fabricmc.fabric-api"
+    }
+    include "grondag:fermion-modkeys:${project.fermion_modkeys_version}.+"
 }
 
 processResources {

@@ -3,7 +3,6 @@ package com.zundrel.conveyance.common.blocks;
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
-import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.utilities.RotationUtilities;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -32,11 +31,6 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     }
 
     @Override
-    public void onWrenched(World world, BlockState state, BlockPos pos, PlayerEntity player) {
-        world.setBlockState(pos, state.with(FACING, state.get(FACING).rotateYClockwise()));
-    }
-
-    @Override
     public BlockEntity createBlockEntity(BlockView blockView) {
         return new VerticalConveyorBlockEntity();
     }
@@ -45,7 +39,7 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     public boolean activate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1) {
         ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world_1.getBlockEntity(blockPos_1);
 
-        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && (Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) instanceof IConveyor || playerEntity_1.getStackInHand(hand_1).getItem() instanceof WrenchItem))
+        if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && Block.getBlockFromItem(playerEntity_1.getStackInHand(hand_1).getItem()) instanceof IConveyor)
             return false;
 
         if (!playerEntity_1.getStackInHand(hand_1).isEmpty() && blockEntity.isEmpty()) {
