@@ -6,11 +6,11 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ModItems {
-    public static WrenchItem WRENCH;
+public class ConveyanceItems {
+    public static WrenchItem WRENCH = register("wrench", new WrenchItem(new Item.Settings().group(Conveyance.generalItemGroup)));
 
     public static void init() {
-        WRENCH = register("wrench", new WrenchItem(new Item.Settings().group(Conveyance.generalItemGroup)));
+        // NO-OP
     }
 
     private static <T extends Item> T register(String name, T item) {

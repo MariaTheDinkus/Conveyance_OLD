@@ -1,10 +1,7 @@
 package com.zundrel.conveyance.common.registries;
 
 import com.zundrel.conveyance.Conveyance;
-import com.zundrel.conveyance.common.blocks.conveyors.ConveyorBlock;
-import com.zundrel.conveyance.common.blocks.conveyors.DownVerticalConveyorBlock;
-import com.zundrel.conveyance.common.blocks.conveyors.SplitterBlock;
-import com.zundrel.conveyance.common.blocks.conveyors.VerticalConveyorBlock;
+import com.zundrel.conveyance.common.blocks.conveyors.*;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -14,19 +11,16 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ModBlocks {
-    public static ConveyorBlock CONVEYOR;
-    public static VerticalConveyorBlock VERTICAL_CONVEYOR;
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR;
+public class ConveyanceBlocks {
+    public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+    public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
 
-    public static SplitterBlock SPLITTER;
+    public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+    public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
 
     public static void init() {
-        CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
-        VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
-        DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
-
-        SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+        // NO-OP
     }
 
     private static BlockItem createBlockItem(Block block) {

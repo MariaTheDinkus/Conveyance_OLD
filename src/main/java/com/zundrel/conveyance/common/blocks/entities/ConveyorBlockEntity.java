@@ -13,7 +13,7 @@ import com.zundrel.conveyance.api.IConveyorMachine;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorBlock;
 import com.zundrel.conveyance.common.inventory.ConveyorExtractable;
 import com.zundrel.conveyance.common.inventory.ConveyorInsertable;
-import com.zundrel.conveyance.common.registries.ModBlockEntities;
+import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
@@ -39,7 +39,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
     protected int prevPosition = 0;
 
     public ConveyorBlockEntity() {
-        super(ModBlockEntities.CONVEYOR);
+        super(ConveyanceBlockEntities.CONVEYOR);
     }
 
     public ConveyorBlockEntity(BlockEntityType type) {

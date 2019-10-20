@@ -12,17 +12,13 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.function.Supplier;
 
-public class ModBlockEntities {
-    public static BlockEntityType CONVEYOR;
-    public static BlockEntityType VERTICAL_CONVEYOR;
-    public static BlockEntityType DOWN_VERTICAL_CONVEYOR;
-
-    public static BlockEntityType INSERTER;
+public class ConveyanceBlockEntities {
+    public static BlockEntityType CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ConveyanceBlocks.CONVEYOR);
+    public static BlockEntityType VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ConveyanceBlocks.VERTICAL_CONVEYOR);
+    public static BlockEntityType DOWN_VERTICAL_CONVEYOR = register("down_vertical_conveyor", DownVerticalConveyorBlockEntity::new, ConveyanceBlocks.DOWN_VERTICAL_CONVEYOR);
 
     public static void init() {
-        CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ModBlocks.CONVEYOR);
-        VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ModBlocks.VERTICAL_CONVEYOR);
-        DOWN_VERTICAL_CONVEYOR = register("down_vertical_conveyor", DownVerticalConveyorBlockEntity::new, ModBlocks.DOWN_VERTICAL_CONVEYOR);
+        // NO-OP
     }
 
     private static BlockEntityType register(String name, Supplier<BlockEntity> blockEntity, Block... block) {

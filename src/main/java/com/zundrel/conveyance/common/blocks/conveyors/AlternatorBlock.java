@@ -16,11 +16,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMachine {
-    public SplitterBlock(Settings settings) {
+public class AlternatorBlock extends HorizontalFacingBlock implements IConveyorMachine {
+    public AlternatorBlock(Settings settings) {
         super(settings);
 
-        setDefaultState(getDefaultState().with(ConveyorProperties.CONVEYOR, false));
+        setDefaultState(getDefaultState().with(ConveyorProperties.CONVEYOR, false).with(ConveyorProperties.LEFT, false));
     }
 
     @Override
@@ -52,21 +52,14 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
             Direction facing = state.get(FACING);
             BlockPos leftPos = pos.offset(facing.rotateYCounterclockwise());
             BlockPos rightPos = pos.offset(facing.rotateYClockwise());
-            int size = stack.getCount();
-            int smallHalf = size / 2;
-            int largeHalf = size - smallHalf;
-
             ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(leftPos);
             ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(rightPos);
 
-            ItemStack smallStack = stack.copy();
-            ItemStack largeStack = stack.copy();
-
-            smallStack.setCount(smallHalf);
-            largeStack.setCount(largeHalf);
-
-            conveyorOne.setStack(smallStack);
-            conveyorTwo.setStack(largeStack);
+            if (state.get(ConveyorProperties.LEFT)) {
+                conveyorOne.setStack(stack);
+            } else {
+                conveyorTwo.setStack(stack);
+            }
 
             world.playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.1F, 1);
         }
@@ -74,12 +67,10 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
 
     @Override
     public boolean canInsert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
-        Direction facing = state.get(FACING);
-        ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYCounterclockwise()));
-        ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
-
-        if (state.get(ConveyorProperties.CONVEYOR) && conveyorOne != null && conveyorTwo != null) {
-
+        if (state.get(ConveyorProperties.CONVEYOR)) {
+            Direction facing = state.get(FACING);
+            ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYCounterclockwise()));
+            ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
             return direction == facing.getOpposite() && conveyorOne.isEmpty() && conveyorTwo.isEmpty();
         }
 
@@ -88,7 +79,7 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
 
     @Override
     protected void appendProperties(StateFactory.Builder<Block, BlockState> stateFactoryBuilder) {
-        stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.CONVEYOR});
+        stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.CONVEYOR, ConveyorProperties.LEFT});
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
-import com.zundrel.conveyance.common.registries.ModBlockEntities;
+import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +13,7 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     protected int prevHorizontalPosition;
 
     public DownVerticalConveyorBlockEntity() {
-        super(ModBlockEntities.DOWN_VERTICAL_CONVEYOR);
+        super(ConveyanceBlockEntities.DOWN_VERTICAL_CONVEYOR);
     }
 
     @Override
