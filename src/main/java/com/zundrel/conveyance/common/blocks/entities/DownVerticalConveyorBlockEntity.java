@@ -1,7 +1,6 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import com.zundrel.conveyance.Conveyance;
-import com.zundrel.conveyance.common.blocks.ConveyorProperties;
+import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.registries.ModBlockEntities;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.nbt.CompoundTag;
@@ -23,9 +22,9 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
         boolean front = getCachedState().get(ConveyorProperties.FRONT);
         boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
 
-        if (!isEmpty() && conveyor && down && getWorld().getBlockEntity(getPos().down()) instanceof DownVerticalConveyorBlockEntity) {
+        if (!isEmpty() && conveyor && !front && down && getWorld().getBlockEntity(getPos().down()) instanceof DownVerticalConveyorBlockEntity) {
             advancePosition(getPos().down(), 32);
-        } else if (!isEmpty() && !conveyor && down && getWorld().getBlockEntity(getPos().down()) instanceof DownVerticalConveyorBlockEntity) {
+        } else if (!isEmpty() && !conveyor && !front && down && getWorld().getBlockEntity(getPos().down()) instanceof DownVerticalConveyorBlockEntity) {
             advancePosition(getPos().down(), 16);
         } else if (!isEmpty() && conveyor && front && getWorld().getBlockEntity(getPos().offset(direction.getOpposite())) instanceof ConveyorBlockEntity) {
             ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(getPos().offset(direction.getOpposite()));
@@ -43,7 +42,6 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
             }
 
             if (empty && position >= 16 && horizontalPosition < 16 || !empty && position >= 16 && horizontalPosition < 16 && conveyorBlockEntity.getPosition() > 4) {
-                Conveyance.LOGGER.info("HELP");
                 setHorizontalPosition(horizontalPosition + 1);
             } else if (horizontalPosition > prevHorizontalPosition) {
                 prevHorizontalPosition = horizontalPosition;
@@ -65,16 +63,20 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
         } else {
             if (horizontalPosition > 0) {
                 setHorizontalPosition(horizontalPosition - 1);
-            } else if (position > 0) {
+            }
+
+            if (position > 0) {
                 setPosition(position - 1);
             }
         }
     }
 
+    @Override
     public boolean hasDown() {
         return down;
     }
 
+    @Override
     public void setDown(boolean down) {
         this.down = down;
         markDirty();
@@ -96,8 +98,6 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
         } else {
             prevPosition = position;
         }
-
-        Conveyance.LOGGER.info(position);
     }
 
     @Override
@@ -119,9 +119,9 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag_1) {
-        super.fromTag(compoundTag_1);
-        down = compoundTag_1.getBoolean("down_vertical");
+    public void fromTag(CompoundTag compoundTag) {
+        super.fromTag(compoundTag);
+        down = compoundTag.getBoolean("down_vertical");
     }
 
     @Override
@@ -130,9 +130,9 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag compoundTag_1) {
-        compoundTag_1.putBoolean("down_vertical", down);
-        return super.toTag(compoundTag_1);
+    public CompoundTag toTag(CompoundTag compoundTag) {
+        compoundTag.putBoolean("down_vertical", down);
+        return super.toTag(compoundTag);
     }
 
     @Override

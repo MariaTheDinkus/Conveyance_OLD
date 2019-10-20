@@ -1,6 +1,6 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import com.zundrel.conveyance.common.blocks.ConveyorProperties;
+import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.registries.ModBlockEntities;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntityType;
@@ -50,8 +50,10 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
             }
         } else {
             if (horizontalPosition > 0) {
-                setPosition(horizontalPosition - 1);
-            } else if (position > 0) {
+                horizontalPosition = 0;
+            }
+
+            if (position > 0) {
                 setPosition(position - 1);
             }
         }
@@ -67,11 +69,12 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     public void advancePosition(BlockPos pos) {
-        ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
+        VerticalConveyorBlockEntity conveyorBlockEntity = (VerticalConveyorBlockEntity) getWorld().getBlockEntity(pos);
         boolean empty = conveyorBlockEntity.isEmpty();
 
         if (position >= 16 && conveyorBlockEntity.isEmpty()) {
             conveyorBlockEntity.setStack(getStack());
+            conveyorBlockEntity.setHorizontalPosition(0);
             removeStack();
         }
 
@@ -105,9 +108,9 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag_1) {
-        super.fromTag(compoundTag_1);
-        up = compoundTag_1.getBoolean("up");
+    public void fromTag(CompoundTag compoundTag) {
+        super.fromTag(compoundTag);
+        up = compoundTag.getBoolean("up");
     }
 
     @Override
@@ -116,9 +119,9 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag compoundTag_1) {
-        compoundTag_1.putBoolean("up", up);
-        return super.toTag(compoundTag_1);
+    public CompoundTag toTag(CompoundTag compoundTag) {
+        compoundTag.putBoolean("up", up);
+        return super.toTag(compoundTag);
     }
 
     @Override

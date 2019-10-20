@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"4": "block/iron_trapdoor",
-		"particle": "block/iron_trapdoor",
+		"4": "conveyance:block/conveyor_supports",
+		"particle": "conveyance:block/conveyor",
 		"conveyor": "conveyance:block/conveyor",
 		"side": "conveyance:block/conveyor_side",
 		"right": "conveyance:block/roller_right",
@@ -36,8 +36,8 @@
 			"from": [0, 3, 6],
 			"to": [16, 4, 16],
 			"faces": {
-				"east": {"uv": [15, 0, 16, 9.5], "rotation": 270, "texture": "#conveyor"},
-				"west": {"uv": [0, 0, 1, 9.5], "rotation": 90, "texture": "#conveyor"},
+				"east": {"uv": [15, 0, 16, 10], "rotation": 270, "texture": "#conveyor"},
+				"west": {"uv": [0, 0, 1, 10], "rotation": 90, "texture": "#conveyor"},
 				"up": {"uv": [0, 0, 16, 10], "rotation": 180, "texture": "#conveyor"},
 				"down": {"uv": [0, 0, 16, 9.5], "texture": "#conveyor"}
 			}
@@ -122,11 +122,19 @@
 			}
 		},
 		{
-			"from": [2, 2.9, 4],
-			"to": [14, 4.1, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [21, 11, 12]},
+			"from": [3, 2.9, 4],
+			"to": [6, 4.1, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [22, 11, 12]},
 			"faces": {
-				"up": {"uv": [0, 3, 16, 16], "texture": "#4"}
+				"up": {"uv": [0, 0, 3, 10], "rotation": 180, "texture": "#4"}
+			}
+		},
+		{
+			"from": [10, 2.9, 4],
+			"to": [13, 4.1, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [29, 11, 12]},
+			"faces": {
+				"up": {"uv": [0, 0, 3, 10], "rotation": 180, "texture": "#4"}
 			}
 		}
 	],
@@ -151,5 +159,5 @@
 					"children": [8, 9, 10]
 				}
 			]
-		}, 11]
+		}, 11, 12]
 }

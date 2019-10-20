@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "conveyance:block/conveyor_supports" }
+    }
+}

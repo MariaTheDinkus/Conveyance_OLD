@@ -17,6 +17,8 @@ public class ModBlockEntities {
     public static BlockEntityType VERTICAL_CONVEYOR;
     public static BlockEntityType DOWN_VERTICAL_CONVEYOR;
 
+    public static BlockEntityType INSERTER;
+
     public static void init() {
         CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ModBlocks.CONVEYOR);
         VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ModBlocks.VERTICAL_CONVEYOR);

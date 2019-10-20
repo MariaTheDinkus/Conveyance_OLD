@@ -5,7 +5,8 @@
 		"conveyor": "conveyance:block/conveyor",
 		"side": "conveyance:block/conveyor_side",
 		"right": "conveyance:block/roller_right",
-		"left": "conveyance:block/roller_left"
+		"left": "conveyance:block/roller_left",
+		"particle": "conveyance:block/conveyor"
 	},
 	"elements": [
 		{

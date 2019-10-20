@@ -43,6 +43,7 @@ repositories {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
     }
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -52,20 +53,18 @@ dependencies {
 
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-	modCompile curse.resolve("wrenchable", "2778557")
-	include curse.resolve("wrenchable", "2778557")
+	modImplementation 'com.github.Zundrel:Wrenchable:0.1.3'
+    include 'com.github.Zundrel:Wrenchable:0.1.3'
 	
-	modImplementation ("grondag:fermion-modkeys:${project.fermion_modkeys_version}.+") {
-        exclude group :"grondag"
-        exclude group :"net.fabricmc.fabric-api"
-    }
-    include "grondag:fermion-modkeys:${project.fermion_modkeys_version}.+"
+	modCompile "alexiil.mc.lib:libblockattributes-items:0.4.12"
+	include "alexiil.mc.lib:libblockattributes-core:0.4.12"
+	include "alexiil.mc.lib:libblockattributes-items:0.4.12"
 	
 	modRuntime ("me.shedaniel:RoughlyEnoughItems:3.0-pre+build.1") {
 		exclude group: 'io.github.prospector.modmenu', module: 'ModMenu'
 	}
 	
-	modCompile "io.github.prospector:modmenu:${project.modmenu}"
+	modCompile "io.github.prospector:modmenu:${project.modmenu_version}"
 }
 
 processResources {

@@ -1,6 +1,6 @@
 package com.zundrel.conveyance.client.renderers;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.zundrel.conveyance.api.IConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -15,20 +15,20 @@ public class VerticalConveyorBlockEntityRenderer extends BlockEntityRenderer<Ver
             ItemStack stack = blockEntity.getStack();
             Direction direction = blockEntity.getCachedState().get(HorizontalFacingBlock.FACING);
 
-            RenderSystem.pushMatrix();
+            GlStateManager.pushMatrix();
 
             setProperties(blockEntity, x, y, z, direction);
 
             float position = blockEntity.getRenderAttachmentData()[1] + (blockEntity.getRenderAttachmentData()[0] - blockEntity.getRenderAttachmentData()[1]) * partialTicks;
             float horizontalPosition = blockEntity.getRenderAttachmentData()[3] + (blockEntity.getRenderAttachmentData()[2] - blockEntity.getRenderAttachmentData()[3]) * partialTicks;
 
-            RenderSystem.translated((horizontalPosition / 8F), (position / 16F), 0);
+            GlStateManager.translated((horizontalPosition / 8F), (position / 16F), 0);
 
             renderSupport(blockEntity);
 
             renderItem(stack);
 
-            RenderSystem.popMatrix();
+            GlStateManager.popMatrix();
         }
     }
 }
