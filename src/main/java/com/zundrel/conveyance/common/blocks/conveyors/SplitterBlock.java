@@ -79,7 +79,6 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
         ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
 
         if (state.get(ConveyorProperties.CONVEYOR) && conveyorOne != null && conveyorTwo != null) {
-
             return direction == facing.getOpposite() && conveyorOne.isEmpty() && conveyorTwo.isEmpty();
         }
 

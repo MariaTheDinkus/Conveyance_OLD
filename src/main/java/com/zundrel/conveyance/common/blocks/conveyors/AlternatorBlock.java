@@ -61,16 +61,19 @@ public class AlternatorBlock extends HorizontalFacingBlock implements IConveyorM
                 conveyorTwo.setStack(stack);
             }
 
+            world.setBlockState(pos, state.cycle(ConveyorProperties.LEFT));
+
             world.playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.1F, 1);
         }
     }
 
     @Override
     public boolean canInsert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
-        if (state.get(ConveyorProperties.CONVEYOR)) {
-            Direction facing = state.get(FACING);
-            ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYCounterclockwise()));
-            ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
+        Direction facing = state.get(FACING);
+        ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYCounterclockwise()));
+        ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
+
+        if (state.get(ConveyorProperties.CONVEYOR) && conveyorOne != null && conveyorTwo != null) {
             return direction == facing.getOpposite() && conveyorOne.isEmpty() && conveyorTwo.isEmpty();
         }
 
