@@ -1,67 +1,79 @@
 package com.zundrel.conveyance.api;
 
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
-import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.*;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.LightType;
 
 import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
-    default void setProperties(T blockEntity, double x, double y, double z, Direction direction) {
-        int light = blockEntity.getWorld().getLightmapIndex(blockEntity.getPos(), 0);
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, (float) (light & 0xFFFF), (float) ((light >> 16) & 0xFFFF));
+    default void renderSupport(T blockEntity, ConveyorType type, float position, float speed, float horizontalPosition, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
+        Direction direction = blockEntity.getCachedState().get(Properties.HORIZONTAL_FACING);
+        int rotation = type == ConveyorType.DOWN_VERTICAL ? -90 : 90;
 
-        GlStateManager.translated(x + 0.5, y + (4F / 16F), z + 0.5);
+        matrixStack.push();
 
-        if (direction == Direction.NORTH || direction == Direction.SOUTH) {
-            GlStateManager.rotatef(direction.asRotation() - 90, 0, 1, 0);
-        } else {
-            GlStateManager.rotatef(direction.getOpposite().asRotation() - 90, 0, 1, 0);
+        matrixStack.translate(0.5, 4F / 16F, 0.5);
+
+        if (type == ConveyorType.DOWN_VERTICAL) {
+            matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(180));
         }
-    }
 
-    default void renderSupport(T blockEntity) {
-        GlStateManager.pushMatrix();
+        if (direction == Direction.NORTH && rotation == 90) {
+            matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(180));
+        } else if (direction == Direction.SOUTH && rotation == -90) {
+            matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(180));
+        } else if (direction == Direction.EAST) {
+            matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(rotation));
+        } else if (direction == Direction.WEST) {
+            matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(-rotation));
+        }
 
-        if (blockEntity instanceof DownVerticalConveyorBlockEntity)
-            GlStateManager.rotated(-90, 0, 1, 0);
-        else
-            GlStateManager.rotated(90, 0, 1, 0);
+        matrixStack.translate(-0.5F, -1.001F, -0.5F);
 
-        GlStateManager.translated(-0.5, -1.001, -0.5);
+        if (type == ConveyorType.VERTICAL && blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) && blockEntity.getPosition() == 16)
+            matrixStack.translate(0, -1F / 16F, 0);
 
-        if (!(blockEntity instanceof DownVerticalConveyorBlockEntity) && blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) && blockEntity.getPosition() == 16)
-            GlStateManager.translated(0, -1F / 16F, 0);
+        if (type == ConveyorType.NORMAL) {
+            matrixStack.translate(0, 0, position / speed);
+        } else if (type == ConveyorType.VERTICAL) {
+            matrixStack.translate(0, position / speed, horizontalPosition / speed);
+        } else if (type == ConveyorType.DOWN_VERTICAL) {
+            matrixStack.translate(0, (position / (speed)) + (blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) ? 1 : 0), horizontalPosition / speed);
+        }
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
         BakedModel model = MinecraftClient.getInstance().getBakedModelManager().getModel(new ModelIdentifier(new Identifier(Conveyance.MODID, "conveyor_supports"),  ""));
 
-        MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(model, 1, 1, 1, 1);
+        int light = LightmapTextureManager.method_23687(blockEntity.getWorld().getLightLevel(LightType.BLOCK, blockEntity.getPos()), blockEntity.getWorld().getLightLevel(LightType.SKY, blockEntity.getPos()));
+        MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrixStack.peek(), vertexConsumerProvider.getBuffer(RenderLayer.getCutout()), null, model, blockEntity.getPos().getX(), blockEntity.getPos().getY(), blockEntity.getPos().getZ(), light, OverlayTexture.DEFAULT_UV);
 
-        GlStateManager.popMatrix();
+        matrixStack.pop();
     }
 
-    default void renderItem(ItemStack stack) {
+    default void renderItem(T blockEntity, ItemStack stack, float position, int speed, float horizontalPosition, ConveyorType type, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
         Random random = new Random();
-
+        Direction direction = blockEntity.getCachedState().get(Properties.HORIZONTAL_FACING);
+        int rotation = type == ConveyorType.DOWN_VERTICAL ? -90 : 90;
         int int_1 = 1;
         if (stack.getCount() > 48) {
             int_1 = 5;
@@ -76,128 +88,97 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
         int seed = stack.isEmpty() ? 187 : Item.getRawId(stack.getItem()) + stack.getDamage();
         random.setSeed(seed);
 
-        if (stack.getItem() instanceof BlockItem && stack.getItem() != Items.REDSTONE) {
-            BlockItem blockItem = (BlockItem) stack.getItem();
-            Block block = blockItem.getBlock();
-
-            MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-
-            if (block instanceof SkullBlock) {
-                GlStateManager.translated(0, 4F / 16F, 0);
-                GlStateManager.rotatef(90, 0, 1, 0);
-
-                if (block == Blocks.DRAGON_HEAD)
-                    GlStateManager.scaled(0.6, 0.6, 0.6);
-
-                for (int i = 0; i < int_1; i++) {
-                    GlStateManager.pushMatrix();
-                    if (i > 0) {
-                        float x = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        float y = (random.nextFloat() * 2.0F) * 0.15F;
-                        float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        GlStateManager.rotated(random.nextInt(10), 0, 1, 0);
-                        GlStateManager.translated(x * 2, y * 0.5, z * 2);
-                    }
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.FIXED);
-                    GlStateManager.popMatrix();
-                }
-            } else if (blockItem instanceof TallBlockItem) {
-                GlStateManager.scaled(0.25, 0.25, 0.25);
-                GlStateManager.translated(-1 + (1.5F / 16F), 0, 0.5);
-
-                for (int i = 0; i < int_1; i++) {
-                    GlStateManager.pushMatrix();
-                    if (i > 0) {
-                        float x = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        float y = (random.nextFloat() * 2.0F) * 0.15F;
-                        float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        GlStateManager.rotated(random.nextInt(10), 0, 1, 0);
-                        GlStateManager.translated(x * 2, y * 0.5, z * 2);
-                    }
-                    MinecraftClient.getInstance().getBlockRenderManager().renderDynamic(block.getDefaultState(), 1);
-
-                    GlStateManager.translated(0, 1, 0);
-                    GlStateManager.rotated(-90, 0, 1, 0);
-
-                    MinecraftClient.getInstance().getBlockRenderManager().renderDynamic(block.getDefaultState().with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 1);
-                    GlStateManager.popMatrix();
-                }
-            } else if (block instanceof GrassBlock || block instanceof BannerBlock || block instanceof SignBlock) {
-                GlStateManager.translated(0, 4F / 16F, 0);
-
-                if (block instanceof BannerBlock || block instanceof SignBlock) {
-                    GlStateManager.scaled(0.6, 0.6, 0.6);
-                    GlStateManager.rotatef(90, 0, 1, 0);
-                }
-
-                for (int i = 0; i < int_1; i++) {
-                    GlStateManager.pushMatrix();
-                    if (i > 0) {
-                        float x = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        float y = (random.nextFloat() * 2.0F) * 0.15F;
-                        float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        GlStateManager.rotated(random.nextInt(10), 0, 1, 0);
-                        GlStateManager.translated(x * 2, y * 0.5, z * 2);
-                    }
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.FIXED);
-                    GlStateManager.popMatrix();
-                }
-            } else {
-                GlStateManager.scaled(0.5, 0.5, 0.5);
-
-                if (block instanceof ChestBlock || block instanceof EnderChestBlock)
-                    GlStateManager.rotated(180, 0, 1, 0);
-
-                GlStateManager.translated(-0.5, 0, 0.5);
-
-                if (block instanceof BedBlock)
-                    GlStateManager.translated(0.5, 0, 0);
-
-                if (block.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
-                    GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                    GlStateManager.enableRescaleNormal();
-                    GlStateManager.alphaFunc(516, 0.1F);
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA.value, GlStateManager.SourceFactor.ONE.value, GlStateManager.DestFactor.ZERO.value);
-                }
-
-                for (int i = 0; i < int_1; i++) {
-                    GlStateManager.pushMatrix();
-                    if (i > 0) {
-                        float x = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        float y = (random.nextFloat() * 2.0F) * 0.15F;
-                        float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                        GlStateManager.rotated(random.nextInt(10), 0, 1, 0);
-                        GlStateManager.translated(x * 2, y * 0.5, z * 2);
-                    }
-                    MinecraftClient.getInstance().getBlockRenderManager().renderDynamic(block.getDefaultState(), 1);
-                    GlStateManager.popMatrix();
-                }
-
-                if (block.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
-                    GlStateManager.disableRescaleNormal();
-                    GlStateManager.disableBlend();
-                }
-            }
-        } else {
-            Item item = stack.getItem();
-
-            GlStateManager.translated(0, (0.5F / 16F), 0);
-            GlStateManager.rotatef(90, 1, 0, 0);
-            GlStateManager.scaled(0.6F, 0.6F, 0.6F);
+        if (!stack.isEmpty() && stack.getItem() instanceof BlockItem && !Conveyance.blacklistedBlocks.containsKey(stack.getItem())) {
+            Block block = ((BlockItem) stack.getItem()).getBlock();
 
             for (int i = 0; i < int_1; i++) {
-                GlStateManager.pushMatrix();
+                matrixStack.push();
+                matrixStack.translate(0.5F, 4F / 16F, 0.5F);
+                if (direction == Direction.NORTH && rotation == 90) {
+                    matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(180));
+                } else if (direction == Direction.SOUTH && rotation == -90) {
+                    matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(180));
+                } else if (direction == Direction.EAST) {
+                    matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(rotation));
+                } else if (direction == Direction.WEST) {
+                    matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(-rotation));
+                }
+
+                if (type == ConveyorType.NORMAL) {
+                    matrixStack.translate(0, 0, position / speed);
+                } else if (type == ConveyorType.VERTICAL) {
+                    matrixStack.translate(0, position / speed, horizontalPosition / speed);
+                } else if (type == ConveyorType.DOWN_VERTICAL) {
+                    matrixStack.translate(0, (position / (speed)) + (blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) ? 1 : 0), horizontalPosition / speed);
+                }
+                matrixStack.scale(0.5F, 0.5F, 0.5F);
+                matrixStack.translate(-0.5F, 0, -0.5F);
+
                 if (i > 0) {
                     float x = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
                     float y = (random.nextFloat() * 2.0F) * 0.15F;
                     float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
-                    GlStateManager.rotated(random.nextInt(10), 0, 1, 0);
-                    GlStateManager.translated(x * 2, y * 0.5, z * 2);
+                    matrixStack.translate(x * 2, y * 0.5F, z * 2);
                 }
-                MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.FIXED);
-                GlStateManager.popMatrix();
+
+                MinecraftClient.getInstance().getBlockRenderManager().renderBlock(block.getDefaultState(), blockEntity.getPos(), MinecraftClient.getInstance().world, matrixStack, vertexConsumerProvider.getBuffer(RenderLayers.getBlockLayer(block.getDefaultState())), false, new Random());
+                if (stack.getItem() instanceof TallBlockItem) {
+                    matrixStack.translate(0, 1, 0);
+                    MinecraftClient.getInstance().getBlockRenderManager().renderBlock(block.getDefaultState().with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), blockEntity.getPos(), MinecraftClient.getInstance().world, matrixStack, vertexConsumerProvider.getBuffer(RenderLayers.getBlockLayer(block.getDefaultState())), false, new Random());
+                }
+
+                matrixStack.pop();
             }
+        } else if (!stack.isEmpty()) {
+            int light = LightmapTextureManager.method_23687(blockEntity.getWorld().getLightLevel(LightType.BLOCK, blockEntity.getPos()), blockEntity.getWorld().getLightLevel(LightType.SKY, blockEntity.getPos()));
+
+            matrixStack.push();
+            matrixStack.multiply(Vector3f.POSITIVE_X.getRotationQuaternion(90.0F));
+            matrixStack.translate(0.5, 0.5, -4.5F / 16F);
+
+            if (stack.getItem() instanceof BlockItem && Conveyance.blacklistedBlocks.containsKey(stack.getItem()) && Conveyance.blacklistedBlocks.get(stack.getItem()).getRight()) {
+                matrixStack.translate(0, 0, -3.5F / 16F);
+            }
+
+            if (direction == Direction.NORTH && rotation == 90) {
+                matrixStack.multiply(Vector3f.POSITIVE_Z.getRotationQuaternion(180));
+            } else if (direction == Direction.SOUTH && rotation == -90) {
+                matrixStack.multiply(Vector3f.POSITIVE_Z.getRotationQuaternion(180));
+            } else if (direction == Direction.EAST) {
+                matrixStack.multiply(Vector3f.POSITIVE_Z.getRotationQuaternion(-rotation));
+            } else if (direction == Direction.WEST) {
+                matrixStack.multiply(Vector3f.POSITIVE_Z.getRotationQuaternion(rotation));
+            }
+
+            if (type == ConveyorType.NORMAL) {
+                matrixStack.translate(0, position / speed, 0);
+            } else if (type == ConveyorType.VERTICAL) {
+                matrixStack.translate(0, horizontalPosition / speed, -position / speed);
+            } else if (type == ConveyorType.DOWN_VERTICAL) {
+                matrixStack.translate(0, horizontalPosition / speed, -(position / (speed)) + (blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR) ? -1 : 0));
+            }
+
+            if (Conveyance.blacklistedBlocks.containsKey(stack.getItem())) {
+                float scale = Conveyance.blacklistedBlocks.get(stack.getItem()).getLeft();
+                matrixStack.scale(scale, scale, scale);
+
+                for (int i = 1; i < int_1; i++) {
+                    matrixStack.push();
+                    if (Conveyance.blacklistedBlocks.get(stack.getItem()).getRight()) {
+                        float x = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
+                        float y = (random.nextFloat() * 2.0F) * 0.15F;
+                        float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
+                        matrixStack.translate(x, z, y * 0.5F);
+                    }
+                    MinecraftClient.getInstance().getItemRenderer().method_23178(stack, ModelTransformation.Type.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
+                    matrixStack.pop();
+                }
+            } else {
+                matrixStack.scale(0.8F, 0.8F, 0.8F);
+            }
+
+            MinecraftClient.getInstance().getItemRenderer().method_23178(stack, ModelTransformation.Type.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
+            matrixStack.pop();
         }
     }
 }

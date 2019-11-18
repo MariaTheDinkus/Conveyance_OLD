@@ -1,5 +1,6 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
+import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -25,6 +26,7 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
     public void tick() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
         boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
 
         if (!isEmpty() && up && getWorld().getBlockEntity(getPos().up()) instanceof VerticalConveyorBlockEntity) {
             advancePosition(getPos().up());
@@ -32,18 +34,18 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
             ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(getPos().offset(direction).up());
             boolean empty = conveyorBlockEntity.isEmpty();
 
-            if (!getWorld().isClient() && position >= 16 && horizontalPosition >= 8 && conveyorBlockEntity.isEmpty()) {
+            if (!getWorld().isClient() && position >= speed && horizontalPosition >= speed / 2 && conveyorBlockEntity.isEmpty()) {
                 conveyorBlockEntity.setStack(getStack());
                 removeStack();
             }
 
-            if (empty && position < 16 || !empty && position < 16 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && position < speed || !empty && position < speed && conveyorBlockEntity.getPosition() > 4) {
                 setPosition(position + 1);
             } else {
                 prevPosition = position;
             }
 
-            if (empty && horizontalPosition < 8 && position >= 16 || !empty && horizontalPosition < 8 && position >= 15 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && horizontalPosition < speed / 2 && position >= speed || !empty && horizontalPosition < speed / 2 && position >= speed - 1 && conveyorBlockEntity.getPosition() > 4) {
                 setHorizontalPosition(horizontalPosition + 1);
             } else {
                 prevHorizontalPosition = horizontalPosition;
@@ -71,14 +73,15 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
     public void advancePosition(BlockPos pos) {
         VerticalConveyorBlockEntity conveyorBlockEntity = (VerticalConveyorBlockEntity) getWorld().getBlockEntity(pos);
         boolean empty = conveyorBlockEntity.isEmpty();
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
 
-        if (position >= 16 && conveyorBlockEntity.isEmpty()) {
+        if (position >= speed && conveyorBlockEntity.isEmpty()) {
             conveyorBlockEntity.setStack(getStack());
             conveyorBlockEntity.setHorizontalPosition(0);
             removeStack();
         }
 
-        if (empty && position < 16 || !empty && position < 16 && position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
+        if (empty && position < speed || !empty && position < speed && position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
             setPosition(position + 1);
         } else {
             prevPosition = position;

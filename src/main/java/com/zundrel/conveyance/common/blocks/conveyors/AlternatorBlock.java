@@ -3,17 +3,17 @@ package com.zundrel.conveyance.common.blocks.conveyors;
 import com.zundrel.conveyance.api.IConveyorMachine;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class AlternatorBlock extends HorizontalFacingBlock implements IConveyorMachine {
@@ -24,12 +24,7 @@ public class AlternatorBlock extends HorizontalFacingBlock implements IConveyorM
     }
 
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-    public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos fromPos, boolean boolean_1) {
+    public BlockState getStateForNeighborUpdate(BlockState blockState, Direction fromDirection, BlockState fromState, IWorld world, BlockPos blockPos, BlockPos fromPos) {
         BlockState newState = blockState;
         Direction direction = newState.get(FACING);
 
@@ -41,9 +36,12 @@ public class AlternatorBlock extends HorizontalFacingBlock implements IConveyorM
         else
             newState = newState.with(ConveyorProperties.CONVEYOR, false);
 
-        world.setBlockState(blockPos, newState);
+        return newState;
+    }
 
-        super.neighborUpdate(blockState, world, blockPos, block, fromPos, boolean_1);
+    @Override
+    public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos blockPos2, boolean boolean_1) {
+        world.setBlockState(blockPos, blockState.getStateForNeighborUpdate(null, blockState, world, blockPos, blockPos2));
     }
 
     @Override
@@ -81,8 +79,8 @@ public class AlternatorBlock extends HorizontalFacingBlock implements IConveyorM
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> stateFactoryBuilder) {
-        stateFactoryBuilder.add(new Property[]{FACING, ConveyorProperties.CONVEYOR, ConveyorProperties.LEFT});
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateManagerBuilder) {
+        stateManagerBuilder.add(new Property[]{FACING, ConveyorProperties.CONVEYOR, ConveyorProperties.LEFT});
     }
 
     @Override

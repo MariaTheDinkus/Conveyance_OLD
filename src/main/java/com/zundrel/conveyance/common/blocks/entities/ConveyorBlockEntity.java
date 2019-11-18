@@ -49,6 +49,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
     @Override
     public void tick() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
 
         if (!isEmpty() && front && across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity && getWorld().getBlockEntity(getPos().offset(direction).offset(direction)) instanceof ConveyorBlockEntity) {
             advancePositionAcross(getPos().offset(direction));
@@ -58,13 +59,13 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
 
             boolean canInsert = conveyorMachine.canInsert(getWorld(), posFacing, getWorld().getBlockState(posFacing), this, getStack(), direction.getOpposite());
 
-            if (!getWorld().isClient() && this.position >= 16 && canInsert) {
+            if (!getWorld().isClient() && this.position >= speed && canInsert) {
                 conveyorMachine.insert(getWorld(), posFacing, getWorld().getBlockState(posFacing), this, getStack(), direction.getOpposite());
                 removeStack();
             }
 
             if (canInsert) {
-                if (this.position < 16) {
+                if (this.position < speed) {
                     setPosition(this.position + 1);
                 }
             } else {
@@ -75,11 +76,11 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
             }
         } else if (!isEmpty() && front && !across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity) {
             advancePosition(getPos().offset(direction));
-        } else if (!isEmpty() && down && getWorld().getBlockEntity(getPos().offset(direction).down()) instanceof DownVerticalConveyorBlockEntity) {
-            advancePosition(getPos().offset(direction).down());
+        } else if (!isEmpty() && down && getWorld().getBlockEntity(getPos().offset(direction).down(1)) instanceof DownVerticalConveyorBlockEntity) {
+            advancePosition(getPos().offset(direction).down(1));
         } else if (!isEmpty() && position > 0) {
             setPosition(Math.max(0, position - 4));
-        } else if (getWorld().getTime() % 16 == 0) {
+        } else if (getWorld().getTime() % speed == 0) {
             if (!isEmpty()) {
                 ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, getPos().offset(direction), SearchOptions.inDirection(direction));
 
@@ -125,13 +126,14 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
     public void advancePosition(BlockPos pos) {
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
         boolean empty = conveyorBlockEntity.isEmpty();
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
 
-        if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isEmpty()) {
+        if (!getWorld().isClient() && this.position >= speed && conveyorBlockEntity.isEmpty()) {
             conveyorBlockEntity.setStack(getStack());
             removeStack();
         }
 
-        if (empty && this.position < 16 || !empty && this.position < 16 && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
+        if (empty && this.position < speed || !empty && this.position < speed && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
             setPosition(this.position + 1);
         } else {
             prevPosition = this.position;
@@ -146,6 +148,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
         ConveyorBlockEntity acrossBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos.offset(direction));
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
         boolean empty = conveyorBlockEntity.isEmpty();
 
         if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isEmpty()) {
@@ -153,7 +156,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
             removeStack();
         }
 
-        if (empty && acrossBlockEntity.getPosition() == 0 && this.position < 16 || !empty && acrossBlockEntity.getPosition() == 0 && this.position < 16 && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
+        if (empty && acrossBlockEntity.getPosition() == 0 && this.position < speed || !empty && acrossBlockEntity.getPosition() == 0 && this.position < speed && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
             setPosition(this.position + 1);
         } else {
             prevPosition = this.position;

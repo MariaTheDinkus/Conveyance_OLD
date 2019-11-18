@@ -1,5 +1,6 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
+import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -21,27 +22,28 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
         boolean front = getCachedState().get(ConveyorProperties.FRONT);
         boolean conveyor = getCachedState().get(ConveyorProperties.CONVEYOR);
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
 
-        if (!isEmpty() && conveyor && !front && down && getWorld().getBlockEntity(getPos().down()) instanceof DownVerticalConveyorBlockEntity) {
-            advancePosition(getPos().down(), 32);
-        } else if (!isEmpty() && !conveyor && !front && down && getWorld().getBlockEntity(getPos().down()) instanceof DownVerticalConveyorBlockEntity) {
-            advancePosition(getPos().down(), 16);
+        if (!isEmpty() && conveyor && !front && down && getWorld().getBlockEntity(getPos().down(1)) instanceof DownVerticalConveyorBlockEntity) {
+            advancePosition(getPos().down(1), speed * 2);
+        } else if (!isEmpty() && !conveyor && !front && down && getWorld().getBlockEntity(getPos().down(1)) instanceof DownVerticalConveyorBlockEntity) {
+            advancePosition(getPos().down(1), speed);
         } else if (!isEmpty() && conveyor && front && getWorld().getBlockEntity(getPos().offset(direction.getOpposite())) instanceof ConveyorBlockEntity) {
             ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(getPos().offset(direction.getOpposite()));
             boolean empty = conveyorBlockEntity.isEmpty();
 
-            if (!getWorld().isClient() && position >= 16 && horizontalPosition >= 16 && conveyorBlockEntity.isEmpty()) {
+            if (!getWorld().isClient() && position >= speed && horizontalPosition >= speed && conveyorBlockEntity.isEmpty()) {
                 conveyorBlockEntity.setStack(getStack());
                 removeStack();
             }
 
-            if (empty && position < 16  || !empty && position < 16 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && position < speed  || !empty && position < speed && conveyorBlockEntity.getPosition() > 4) {
                 setPosition(position + 1);
             } else if (position > prevPosition) {
                 prevPosition = position;
             }
 
-            if (empty && position >= 16 && horizontalPosition < 16 || !empty && position >= 16 && horizontalPosition < 16 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && position >= speed && horizontalPosition < speed || !empty && position >= speed && horizontalPosition < speed && conveyorBlockEntity.getPosition() > 4) {
                 setHorizontalPosition(horizontalPosition + 1);
             } else if (horizontalPosition > prevHorizontalPosition) {
                 prevHorizontalPosition = horizontalPosition;
@@ -50,12 +52,12 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
             ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(getPos().offset(direction.getOpposite()));
             boolean empty = conveyorBlockEntity.isEmpty();
 
-            if (!getWorld().isClient() && horizontalPosition >= 16 && conveyorBlockEntity.isEmpty()) {
+            if (!getWorld().isClient() && horizontalPosition >= speed && conveyorBlockEntity.isEmpty()) {
                 conveyorBlockEntity.setStack(getStack());
                 removeStack();
             }
 
-            if (empty && horizontalPosition < 16 || !empty && horizontalPosition < 16 && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && horizontalPosition < speed || !empty && horizontalPosition < speed && conveyorBlockEntity.getPosition() > 4) {
                 setHorizontalPosition(horizontalPosition + 1);
             } else if (horizontalPosition > prevHorizontalPosition) {
                 prevHorizontalPosition = horizontalPosition;
@@ -85,13 +87,14 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     public void advancePosition(BlockPos pos, int distance) {
         DownVerticalConveyorBlockEntity conveyorBlockEntity = (DownVerticalConveyorBlockEntity) getWorld().getBlockEntity(pos);
         boolean empty = conveyorBlockEntity.isEmpty();
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
 
         if (!getWorld().isClient() && position >= distance && conveyorBlockEntity.isEmpty()) {
             conveyorBlockEntity.setStack(getStack());
             removeStack();
         }
 
-        if (position < 0 + (distance - 16)) {
+        if (position < 0 + (distance - speed)) {
             setPosition(position + 1);
         } else if (empty && position < distance || !empty && position < distance && position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
             setPosition(position + 1);

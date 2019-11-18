@@ -41,9 +41,9 @@ public class MovementUtilities {
 	}
 
 	private static void centerZ(Entity entity, BlockPos pos) {
-        if (entity.z > pos.getZ() + .55) {
+        if (entity.getZ() > pos.getZ() + .55) {
             entity.addVelocity(0, 0, -0.1F);
-        } else if (entity.z < pos.getZ() + .45) {
+        } else if (entity.getZ() < pos.getZ() + .45) {
             entity.addVelocity(0, 0, 0.1F);
         } else {
             entity.setVelocity(entity.getVelocity().getX(), entity.getVelocity().getY(), 0);
@@ -51,9 +51,9 @@ public class MovementUtilities {
     }
 
     private static void centerX(Entity entity, BlockPos pos) {
-        if (entity.x > pos.getX() + .55) {
+        if (entity.getX() > pos.getX() + .55) {
             entity.addVelocity(-0.1F, 0, 0);
-        } else if (entity.x < pos.getX() + .45) {
+        } else if (entity.getX() < pos.getX() + .45) {
             entity.addVelocity(0.1F, 0, 0);
         } else {
             entity.setVelocity(0, entity.getVelocity().getY(), entity.getVelocity().getZ());
