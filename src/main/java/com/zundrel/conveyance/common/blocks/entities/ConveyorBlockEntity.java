@@ -282,6 +282,8 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
         front = compoundTag.getBoolean("front");
         down = compoundTag.getBoolean("down");
         across = compoundTag.getBoolean("across");
+        position = compoundTag.getInt("position");
+        prevPosition = compoundTag.getInt("position");
     }
 
     @Override
@@ -295,6 +297,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
         compoundTag.putBoolean("front", front);
         compoundTag.putBoolean("down", down);
         compoundTag.putBoolean("across", across);
+        compoundTag.putInt("position", position);
         return super.toTag(compoundTag);
     }
 

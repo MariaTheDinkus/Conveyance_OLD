@@ -3,10 +3,8 @@ package com.zundrel.conveyance.common.registries;
 import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.conveyors.*;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -17,17 +15,18 @@ public class ConveyanceBlocks {
     public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 16));
     public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 16));
     public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 16));
+    public static ConveyorBlock FAST_CONVEYOR = register("fast_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 8));
+    public static VerticalConveyorBlock VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 8));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 8));
+    public static ConveyorBlock EXPRESS_CONVEYOR = register("express_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 4));
+    public static VerticalConveyorBlock VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 4));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build(), 4));
 
     public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
     public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
 
     public static void init() {
-        BlockRenderLayerMap.INSTANCE.putBlock(CONVEYOR, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(VERTICAL_CONVEYOR, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(DOWN_VERTICAL_CONVEYOR, RenderLayer.getCutout());
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ALTERNATOR, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(SPLITTER, RenderLayer.getCutout());
     }
 
     private static BlockItem createBlockItem(Block block) {

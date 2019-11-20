@@ -85,7 +85,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
                 entity.remove();
             }
         } else if (!(entity instanceof ItemEntity)) {
-            MovementUtilities.pushEntity(entity, blockPos, 0.125F, direction);
+            MovementUtilities.pushEntity(entity, blockPos, 2.0F / getSpeed(), direction);
         }
     }
 

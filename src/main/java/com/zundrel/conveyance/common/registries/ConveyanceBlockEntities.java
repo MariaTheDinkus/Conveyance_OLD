@@ -13,9 +13,9 @@ import net.minecraft.util.registry.Registry;
 import java.util.function.Supplier;
 
 public class ConveyanceBlockEntities {
-    public static BlockEntityType CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ConveyanceBlocks.CONVEYOR);
-    public static BlockEntityType VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ConveyanceBlocks.VERTICAL_CONVEYOR);
-    public static BlockEntityType DOWN_VERTICAL_CONVEYOR = register("down_vertical_conveyor", DownVerticalConveyorBlockEntity::new, ConveyanceBlocks.DOWN_VERTICAL_CONVEYOR);
+    public static BlockEntityType CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ConveyanceBlocks.CONVEYOR, ConveyanceBlocks.FAST_CONVEYOR, ConveyanceBlocks.EXPRESS_CONVEYOR);
+    public static BlockEntityType VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ConveyanceBlocks.VERTICAL_CONVEYOR, ConveyanceBlocks.VERTICAL_FAST_CONVEYOR, ConveyanceBlocks.VERTICAL_EXPRESS_CONVEYOR);
+    public static BlockEntityType DOWN_VERTICAL_CONVEYOR = register("down_vertical_conveyor", DownVerticalConveyorBlockEntity::new, ConveyanceBlocks.DOWN_VERTICAL_CONVEYOR, ConveyanceBlocks.DOWN_VERTICAL_FAST_CONVEYOR, ConveyanceBlocks.DOWN_VERTICAL_EXPRESS_CONVEYOR);
 
     public static void init() {
         // NO-OP
