@@ -4,6 +4,7 @@ import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -43,7 +44,7 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
                 prevPosition = position;
             }
 
-            if (empty && position >= speed && horizontalPosition < speed || !empty && position >= speed && horizontalPosition < speed && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && position >= speed && horizontalPosition < speed) {
                 setHorizontalPosition(horizontalPosition + 1);
             } else if (horizontalPosition > prevHorizontalPosition) {
                 prevHorizontalPosition = horizontalPosition;
@@ -57,7 +58,7 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
                 removeStack();
             }
 
-            if (empty && horizontalPosition < speed || !empty && horizontalPosition < speed && conveyorBlockEntity.getPosition() > 4) {
+            if (empty && horizontalPosition < speed) {
                 setHorizontalPosition(horizontalPosition + 1);
             } else if (horizontalPosition > prevHorizontalPosition) {
                 prevHorizontalPosition = horizontalPosition;
@@ -71,6 +72,13 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
                 setPosition(position - 1);
             }
         }
+    }
+
+    @Override
+    public ItemStack removeStack() {
+        horizontalPosition = 0;
+        prevHorizontalPosition = 0;
+        return super.removeStack();
     }
 
     @Override
@@ -94,9 +102,9 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
             removeStack();
         }
 
-        if (position < 0 + (distance - speed)) {
+        if (empty && position < 0 + (distance - speed)) {
             setPosition(position + 1);
-        } else if (empty && position < distance || !empty && position < distance && position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
+        } else if (empty && position < distance) {
             setPosition(position + 1);
         } else {
             prevPosition = position;
@@ -125,6 +133,8 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     public void fromTag(CompoundTag compoundTag) {
         super.fromTag(compoundTag);
         down = compoundTag.getBoolean("down_vertical");
+        horizontalPosition = compoundTag.getInt("horizontalPosition");
+        prevHorizontalPosition = horizontalPosition = compoundTag.getInt("horizontalPosition");
     }
 
     @Override
@@ -135,6 +145,7 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     @Override
     public CompoundTag toTag(CompoundTag compoundTag) {
         compoundTag.putBoolean("down_vertical", down);
+        compoundTag.putInt("horizontalPosition", horizontalPosition);
         return super.toTag(compoundTag);
     }
 

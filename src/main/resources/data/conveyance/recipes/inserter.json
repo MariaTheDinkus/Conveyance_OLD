@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "iPi",
+        "R_R",
+        "iHi"
+    ],
+    "key": {
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "P": {
+            "item": "minecraft:piston"
+        },
+		"H": {
+            "item": "minecraft:sticky_piston"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "_": {
+            "item": "conveyance:conveyor"
+        }
+    },
+    "result": {
+        "item": "conveyance:inserter",
+        "count": 1
+    }
+}

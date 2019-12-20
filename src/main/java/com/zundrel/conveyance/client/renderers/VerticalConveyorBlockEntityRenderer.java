@@ -28,8 +28,6 @@ public class VerticalConveyorBlockEntityRenderer extends BlockEntityRenderer<Ver
             renderSupport(blockEntity, type, position, speed, horizontalPosition, matrixStack, vertexConsumerProvider);
 
             renderItem(blockEntity, stack, position, speed, horizontalPosition, type, matrixStack, vertexConsumerProvider);
-
-            //matrixStack.pop();
         }
     }
 }

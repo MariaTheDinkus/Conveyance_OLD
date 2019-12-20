@@ -3,8 +3,8 @@
 	"parent": "block/block",
 	"textures": {
 		"4": "conveyance:block/conveyor_supports",
-		"particle": "conveyance:block/conveyor_fast",
-		"conveyor": "conveyance:block/conveyor_fast",
+		"particle": "conveyance:block/conveyor_express",
+		"conveyor": "conveyance:block/conveyor_express",
 		"side": "conveyance:block/conveyor_side",
 		"right": "conveyance:block/roller_right",
 		"left": "conveyance:block/roller_left"

@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.zundrel.conveyance.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"ItemAttributesMixin",
+		"EntityContextImplAccess"
+	],
+	"client": [
+		
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

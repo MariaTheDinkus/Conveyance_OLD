@@ -1,0 +1,16 @@
+{
+  "multipart": [
+	{   "when": { "facing": "north" },
+		"apply": { "model": "conveyance:block/inserter" }
+	},
+	{   "when": { "facing": "east" },
+		"apply": { "model": "conveyance:block/inserter", "y": 90 }
+	},
+	{   "when": { "facing": "south" },
+		"apply": { "model": "conveyance:block/inserter", "y": 180 }
+	},
+	{   "when": { "facing": "west" },
+		"apply": { "model": "conveyance:block/inserter", "y": 270 }
+	}
+  ]
+}

@@ -48,7 +48,9 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
             float position = -(blockEntity.getRenderAttachmentData()[1] + (blockEntity.getRenderAttachmentData()[0] - blockEntity.getRenderAttachmentData()[1]) * partialTicks);
             float horizontalPosition = (blockEntity.getRenderAttachmentData()[3] + (blockEntity.getRenderAttachmentData()[2] - blockEntity.getRenderAttachmentData()[3]) * partialTicks);
 
-            if (blockEntity.getPosition() < 16 && !front) {
+            if (front && horizontalPosition > 0) {
+
+            } else {
                 renderSupport(blockEntity, type, position, speed, horizontalPosition, matrixStack, vertexConsumerProvider);
             }
 

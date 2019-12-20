@@ -1,37 +1,24 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
-import alexiil.mc.lib.attributes.item.ItemExtractable;
-import alexiil.mc.lib.attributes.item.ItemInsertable;
-import alexiil.mc.lib.attributes.item.impl.EmptyItemExtractable;
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.api.IConveyorMachine;
-import com.zundrel.conveyance.common.blocks.conveyors.ConveyorBlock;
-import com.zundrel.conveyance.common.inventory.ConveyorExtractable;
-import com.zundrel.conveyance.common.inventory.ConveyorInsertable;
+import com.zundrel.conveyance.common.inventory.ConveyorInventory;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HopperBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.Properties;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 
-public class ConveyorBlockEntity extends BlockEntity implements AttributeProvider, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
-    private ItemStack stack = ItemStack.EMPTY;
+public class ConveyorBlockEntity extends BlockEntity implements ConveyorInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
+    private DefaultedList<ItemStack> stacks = DefaultedList.ofSize(1, ItemStack.EMPTY);
     protected boolean front = false;
     protected boolean down = false;
     protected boolean across = false;
@@ -77,47 +64,9 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
         } else if (!isEmpty() && front && !across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity) {
             advancePosition(getPos().offset(direction));
         } else if (!isEmpty() && down && getWorld().getBlockEntity(getPos().offset(direction).down(1)) instanceof DownVerticalConveyorBlockEntity) {
-            advancePosition(getPos().offset(direction).down(1));
+            advancePositionDown(getPos().offset(direction).down(1));
         } else if (!isEmpty() && position > 0) {
             setPosition(Math.max(0, position - 4));
-        } else if (getWorld().getTime() % speed == 0) {
-            if (!isEmpty()) {
-                ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, getPos().offset(direction), SearchOptions.inDirection(direction));
-
-                ItemStack stack = insertable.attemptInsertion(this.stack, Simulation.ACTION);
-                if (stack.isEmpty() || stack.getCount() != getStack().getCount()) {
-                    setStack(stack);
-                }
-            }
-
-            if (isEmpty()) {
-                BlockState state = this.getCachedState();
-                if (state.getBlock() instanceof ConveyorBlock) {
-                    Direction facing = state.get(Properties.HORIZONTAL_FACING);
-
-                    BlockPos behind = pos.offset(facing.getOpposite());
-                    BlockState behindState = world.getBlockState(behind);
-                    if (!(behindState.getBlock() instanceof IConveyor)) { //Don't pull. We'll get a push
-                        ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, behind, SearchOptions.inDirection(facing.getOpposite()));
-                        ItemStack stack = extractable.attemptAnyExtraction(64, Simulation.ACTION);
-                        if (!stack.isEmpty()) {
-                            setStack(stack);
-                        }
-                    }
-                }
-
-                if (state.getBlock() instanceof ConveyorBlock) {
-                    BlockPos top = pos.offset(Direction.UP);
-                    BlockState topState = world.getBlockState(top);
-                    if (topState.getBlock() instanceof HopperBlock) { //Don't pull. We'll get a push
-                        ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, top, SearchOptions.inDirection(Direction.UP));
-                        ItemStack stack = extractable.attemptAnyExtraction(64, Simulation.ACTION);
-                        if (!stack.isEmpty()) {
-                            setStack(stack);
-                        }
-                    }
-                }
-            }
         } else if (isEmpty() && position > 0) {
             setPosition(0);
         }
@@ -134,6 +83,27 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
         }
 
         if (empty && this.position < speed || !empty && this.position < speed && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
+            setPosition(this.position + 1);
+        } else {
+            prevPosition = this.position;
+        }
+
+        if (this.position > 0 && !conveyorBlockEntity.isEmpty() && conveyorBlockEntity.getPosition() == 0) {
+            setPosition(Math.max(0, this.position - 4));
+        }
+    }
+
+    public void advancePositionDown(BlockPos pos) {
+        ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
+        boolean empty = conveyorBlockEntity.isEmpty();
+        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
+
+        if (!getWorld().isClient() && this.position >= speed && conveyorBlockEntity.isEmpty()) {
+            conveyorBlockEntity.setStack(getStack());
+            removeStack();
+        }
+
+        if (empty && this.position < speed) {
             setPosition(this.position + 1);
         } else {
             prevPosition = this.position;
@@ -167,26 +137,16 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
         }
     }
 
-    public ItemStack getStack() {
-        return stack;
+    @Override
+    public DefaultedList<ItemStack> getItems() {
+        return stacks;
     }
 
-    public void setStack(ItemStack stack) {
-        this.stack = stack;
-        markDirty();
-    }
-
-    public void removeStack() {
-        this.stack = ItemStack.EMPTY;
-        markDirty();
-    }
-
-    public void clear() {
-        this.stack = ItemStack.EMPTY;
-    }
-
-    public boolean isEmpty() {
-        return getStack().isEmpty();
+    @Override
+    public ItemStack removeStack() {
+        position = 0;
+        prevPosition = 0;
+        return ConveyorInventory.super.removeStack();
     }
 
     @Override
@@ -239,7 +199,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
 
     public void sync() {
         if (world instanceof ServerWorld) {
-            ((ServerWorld)world).method_14178().markForUpdate(pos);
+            ((ServerWorld)world).getChunkManager().markForUpdate(pos);
         }
     }
 
@@ -250,35 +210,10 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
     }
 
     @Override
-    public void addAllAttributes(World world, BlockPos blockPos, BlockState blockState, AttributeList<?> attributeList) {
-        Direction dir = attributeList.getSearchDirection();
-        if (dir==null) return; //We're not offering anything to omnidirectional searches
-        if (dir==Direction.UP) {
-            attributeList.offer(new ConveyorInsertable(this));
-        } else if (dir==Direction.DOWN) {
-            attributeList.offer(new ConveyorExtractable(this));
-        } else {
-            if (blockState.getBlock() instanceof ConveyorBlock) {
-                Direction facing = blockState.get(Properties.HORIZONTAL_FACING);
-
-                if (dir==facing) {
-                    attributeList.offer(EmptyItemExtractable.SUPPLIER); //Don't call us, we'll call you.
-                } else if (dir==facing.getOpposite()) {
-                    attributeList.offer(new ConveyorInsertable(this));
-                } else {
-
-
-
-                }
-            }
-        }
-    }
-
-    @Override
     public void fromTag(CompoundTag compoundTag) {
         super.fromTag(compoundTag);
         clear();
-        stack = ItemStack.fromTag(compoundTag.getCompound("stack"));
+        setStack(ItemStack.fromTag(compoundTag.getCompound("stack")));
         front = compoundTag.getBoolean("front");
         down = compoundTag.getBoolean("down");
         across = compoundTag.getBoolean("across");
@@ -293,7 +228,7 @@ public class ConveyorBlockEntity extends BlockEntity implements AttributeProvide
 
     @Override
     public CompoundTag toTag(CompoundTag compoundTag) {
-        compoundTag.put("stack", stack.toTag(new CompoundTag()));
+        compoundTag.put("stack", getStack().toTag(new CompoundTag()));
         compoundTag.putBoolean("front", front);
         compoundTag.putBoolean("down", down);
         compoundTag.putBoolean("across", across);

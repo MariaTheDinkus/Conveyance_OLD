@@ -1,6 +1,9 @@
 {
 	"itemGroup.conveyance.general": "Conveyance",
 	
+	"block.conveyance.alternator": "Alternator",
+	"block.conveyance.splitter": "Splitter",
+	"block.conveyance.inserter": "Inserter",
 	"block.conveyance.conveyor": "Conveyor",
 	"block.conveyance.conveyor_vertical": "Vertical Conveyor",
 	"block.conveyance.conveyor_vertical_down": "Vertical Conveyor (Down)",
@@ -10,8 +13,8 @@
 	"block.conveyance.express_conveyor": "Express Conveyor",
 	"block.conveyance.express_conveyor_vertical": "Express Vertical Conveyor",
 	"block.conveyance.express_conveyor_vertical_down": "Express Vertical Conveyor (Down)",
-	"block.conveyance.alternator": "Alternator",
-	"block.conveyance.splitter": "Splitter",
+	"block.conveyance.catwalk": "Catwalk",
+	"block.conveyance.catwalk_stairs": "Catwalk Stairs",
 	
 	"item.conveyance.wrench": "Wrench"
 }

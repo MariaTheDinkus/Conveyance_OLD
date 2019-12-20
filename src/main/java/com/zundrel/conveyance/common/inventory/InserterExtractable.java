@@ -3,13 +3,13 @@ package com.zundrel.conveyance.common.inventory;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
-import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.InserterBlockEntity;
 import net.minecraft.item.ItemStack;
 
-public class ConveyorExtractable implements ItemExtractable {
-	protected final ConveyorBlockEntity delegate;
+public class InserterExtractable implements ItemExtractable {
+	protected final InserterBlockEntity delegate;
 	
-	public ConveyorExtractable(ConveyorBlockEntity delegate) {
+	public InserterExtractable(InserterBlockEntity delegate) {
 		this.delegate = delegate;
 	}
 	

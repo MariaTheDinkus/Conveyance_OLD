@@ -2,13 +2,13 @@ package com.zundrel.conveyance.common.inventory;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.ItemInsertable;
-import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.InserterBlockEntity;
 import net.minecraft.item.ItemStack;
 
-public class ConveyorInsertable implements ItemInsertable {
-	protected final ConveyorBlockEntity delegate;
+public class InserterInsertable implements ItemInsertable {
+	protected final InserterBlockEntity delegate;
 	
-	public ConveyorInsertable(ConveyorBlockEntity delegate) {
+	public InserterInsertable(InserterBlockEntity delegate) {
 		this.delegate = delegate;
 	}
 	
@@ -17,7 +17,6 @@ public class ConveyorInsertable implements ItemInsertable {
 		if (delegate.getStack().isEmpty()) {
 			if (simulation==Simulation.ACTION) {
 				delegate.setStack(stack.copy());
-				delegate.setPosition(0);
 			}
 			return ItemStack.EMPTY;
 		} else {

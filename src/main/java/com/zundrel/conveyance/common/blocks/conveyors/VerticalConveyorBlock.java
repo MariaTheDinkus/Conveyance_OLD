@@ -123,7 +123,6 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     public BlockState getStateForNeighborUpdate(BlockState blockState, Direction fromDirection, BlockState fromState, IWorld world, BlockPos blockPos, BlockPos fromPos) {
         BlockState newState = blockState;
         Direction direction = newState.get(FACING);
-        boolean up = false;
 
         BlockPos frontPos = blockPos.offset(direction.getOpposite());
         BlockPos upPos = blockPos.up();
@@ -131,11 +130,10 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
 
         if (world.getBlockState(frontPos).getBlock() instanceof ConveyorBlock && world.getBlockState(frontPos).get(FACING) == direction) {
             newState = newState.with(ConveyorProperties.FRONT, true);
-            up = true;
         } else
             newState = newState.with(ConveyorProperties.FRONT, false);
 
-        if (!up && world.getBlockState(upPos).isAir() && world.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world.getBlockState(conveyorPos).get(FACING) == direction)
+        if (world.getBlockState(upPos).isAir() && world.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world.getBlockState(conveyorPos).get(FACING) == direction)
             newState = newState.with(ConveyorProperties.CONVEYOR, true);
         else
             newState = newState.with(ConveyorProperties.CONVEYOR, false);
@@ -166,6 +164,11 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     @Override
     public boolean isTranslucent(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
         return true;
+    }
+
+    @Override
+    public boolean isSimpleFullBlock(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
+        return false;
     }
 
     @Override

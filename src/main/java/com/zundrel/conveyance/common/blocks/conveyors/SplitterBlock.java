@@ -7,8 +7,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
@@ -65,8 +63,6 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
 
             conveyorOne.setStack(smallStack);
             conveyorTwo.setStack(largeStack);
-
-            world.playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.1F, 1);
         }
     }
 

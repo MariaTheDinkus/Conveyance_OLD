@@ -12,7 +12,9 @@
     "homepage": "http://zundrel.com/",
     "sources": "https://github.com/Zundrel/Conveyance"
   },
-
+  "mixins": [
+    "conveyance.mixins.json"
+  ],
   "license": "MIT",
   "icon": "assets/conveyance/icon.png",
 

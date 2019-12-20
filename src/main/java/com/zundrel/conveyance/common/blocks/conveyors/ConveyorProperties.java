@@ -8,4 +8,5 @@ public class ConveyorProperties {
     public static final BooleanProperty RIGHT = BooleanProperty.of("right");
     public static final BooleanProperty UP = BooleanProperty.of("up");
     public static final BooleanProperty CONVEYOR = BooleanProperty.of("conveyor");
+    public static final BooleanProperty FLOOR = BooleanProperty.of("floor");
 }

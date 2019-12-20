@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "conveyance:fast_conveyor"
+        }
+    ],
+    "result": {
+        "item": "conveyance:fast_conveyor_vertical",
+        "count": 1
+    }
+}

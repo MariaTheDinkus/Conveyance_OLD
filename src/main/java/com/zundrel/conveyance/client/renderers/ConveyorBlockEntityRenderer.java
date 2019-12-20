@@ -28,9 +28,4 @@ public class ConveyorBlockEntityRenderer extends BlockEntityRenderer<ConveyorBlo
             renderItem(blockEntity, stack, position, speed, 0, type, matrixStack, vertexConsumerProvider);
         }
     }
-
-    @Override
-    public boolean method_3563(ConveyorBlockEntity blockEntity_1) {
-        return super.method_3563(blockEntity_1);
-    }
 }
