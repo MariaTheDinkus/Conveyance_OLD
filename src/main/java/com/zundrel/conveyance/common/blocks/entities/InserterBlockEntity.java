@@ -41,7 +41,7 @@ public class InserterBlockEntity extends BlockEntity implements AttributeProvide
     public void tick() {
         Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
 
-        if (getWorld().getTime() % 15 == 0) {
+        if (!getWorld().isClient() && getWorld().getTime() % 15 == 0) {
             if (!isEmpty()) {
                 ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, getPos().offset(direction), SearchOptions.inDirection(direction));
 
