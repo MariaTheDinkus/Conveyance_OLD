@@ -7,7 +7,10 @@ import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityContext;
@@ -125,14 +128,22 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
         if (world.getBlockState(leftPos).getBlock() instanceof ConveyorBlock && world.getBlockState(leftPos).get(FACING) == direction.rotateYClockwise())
             newState = newState.with(ConveyorProperties.LEFT, true);
+        else if (world.getBlockState(leftPos).getBlock() instanceof DownVerticalConveyorBlock && world.getBlockState(leftPos).get(FACING) != direction && world.getBlockState(leftPos).get(ConveyorProperties.FRONT))
+            newState = newState.with(ConveyorProperties.LEFT, true);
         else if (world.getBlockState(leftPos).getBlock() instanceof IConveyorMachine)
             newState = newState.with(ConveyorProperties.LEFT, true);
+        else if (world.getBlockState(leftPos.down()).getBlock() instanceof VerticalConveyorBlock && !(world.getBlockState(leftPos.down()).getBlock() instanceof DownVerticalConveyorBlock) && world.getBlockState(leftPos.down()).get(FACING) == direction.rotateYClockwise() && world.getBlockState(leftPos.down()).get(ConveyorProperties.CONVEYOR))
+            newState = newState.with(ConveyorProperties.RIGHT, true);
         else
             newState = newState.with(ConveyorProperties.LEFT, false);
 
         if (world.getBlockState(rightPos).getBlock() instanceof ConveyorBlock && world.getBlockState(rightPos).get(FACING) == direction.rotateYCounterclockwise())
             newState = newState.with(ConveyorProperties.RIGHT, true);
+        else if (world.getBlockState(rightPos).getBlock() instanceof DownVerticalConveyorBlock && world.getBlockState(rightPos).get(FACING) != direction && world.getBlockState(rightPos).get(ConveyorProperties.FRONT))
+            newState = newState.with(ConveyorProperties.LEFT, true);
         else if (world.getBlockState(rightPos).getBlock() instanceof IConveyorMachine)
+            newState = newState.with(ConveyorProperties.RIGHT, true);
+        else if (world.getBlockState(rightPos.down()).getBlock() instanceof VerticalConveyorBlock && !(world.getBlockState(rightPos.down()).getBlock() instanceof DownVerticalConveyorBlock) && world.getBlockState(rightPos.down()).get(FACING) == direction.rotateYCounterclockwise() && world.getBlockState(rightPos.down()).get(ConveyorProperties.CONVEYOR))
             newState = newState.with(ConveyorProperties.RIGHT, true);
         else
             newState = newState.with(ConveyorProperties.RIGHT, false);

@@ -53,7 +53,7 @@ public class DownVerticalConveyorBlock extends VerticalConveyorBlock {
         BlockPos frontPos = blockPos.offset(direction.getOpposite());
         BlockPos conveyorPos = blockPos.offset(direction).up();
 
-        if (world.getBlockState(frontPos).getBlock() instanceof ConveyorBlock && world.getBlockState(frontPos).get(FACING) == direction.getOpposite())
+        if (world.getBlockState(frontPos).getBlock() instanceof ConveyorBlock && world.getBlockState(frontPos).get(FACING) != direction)
             newState = newState.with(ConveyorProperties.FRONT, true);
         else
             newState = newState.with(ConveyorProperties.FRONT, false);

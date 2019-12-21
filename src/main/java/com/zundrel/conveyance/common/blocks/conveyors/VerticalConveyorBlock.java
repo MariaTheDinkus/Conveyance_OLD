@@ -133,7 +133,7 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
         } else
             newState = newState.with(ConveyorProperties.FRONT, false);
 
-        if (world.getBlockState(upPos).isAir() && world.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world.getBlockState(conveyorPos).get(FACING) == direction)
+        if (world.getBlockState(upPos).isAir() && world.getBlockState(conveyorPos).getBlock() instanceof ConveyorBlock && world.getBlockState(conveyorPos).get(FACING) != direction.getOpposite())
             newState = newState.with(ConveyorProperties.CONVEYOR, true);
         else
             newState = newState.with(ConveyorProperties.CONVEYOR, false);
