@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "conveyance",
   "version": "${version}",
-
   "name": "Conveyance",
   "description": "An item transport and factory themed mod!",
   "authors": [
@@ -17,7 +16,6 @@
   ],
   "license": "MIT",
   "icon": "assets/conveyance/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -30,8 +28,5 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric": "*"
-  },
-  "suggests": {
-    "flamingo": "*"
   }
 }

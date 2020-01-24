@@ -19,7 +19,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -219,7 +218,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> stateManagerBuilder) {
-        stateManagerBuilder.add(new Property[]{FACING, ConveyorProperties.LEFT, ConveyorProperties.RIGHT, ConveyorProperties.UP});
+        stateManagerBuilder.add(FACING, ConveyorProperties.LEFT, ConveyorProperties.RIGHT, ConveyorProperties.UP);
     }
 
     @Override

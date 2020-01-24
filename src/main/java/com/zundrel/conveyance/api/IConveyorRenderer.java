@@ -177,14 +177,14 @@ public interface IConveyorRenderer<T extends ConveyorBlockEntity> {
                         float z = (random.nextFloat() * 2.0F - 1.0F) * 0.15F;
                         matrixStack.translate(x, z, y * 0.5F);
                     }
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
                     matrixStack.pop();
                 }
             } else {
                 matrixStack.scale(0.8F, 0.8F, 0.8F);
             }
 
-            MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
             matrixStack.pop();
         }
     }

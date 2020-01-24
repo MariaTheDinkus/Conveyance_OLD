@@ -24,6 +24,6 @@ public class ConveyanceBlockEntities {
     }
 
     private static BlockEntityType register(String name, Supplier<BlockEntity> blockEntity, Block... block) {
-        return Registry.register(Registry.BLOCK_ENTITY, new Identifier(Conveyance.MODID, name), BlockEntityType.Builder.create(blockEntity, block).build(null));
+        return Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(Conveyance.MODID, name), BlockEntityType.Builder.create(blockEntity, block).build(null));
     }
 }

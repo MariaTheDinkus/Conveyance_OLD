@@ -8,7 +8,6 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
@@ -69,11 +68,13 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
     @Override
     public boolean canInsert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
         Direction facing = state.get(FACING);
-        ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYCounterclockwise()));
-        ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
+        if (state.get(ConveyorProperties.CONVEYOR)) {
+            ConveyorBlockEntity conveyorOne = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYCounterclockwise()));
+            ConveyorBlockEntity conveyorTwo = (ConveyorBlockEntity) world.getBlockEntity(pos.offset(facing.rotateYClockwise()));
 
-        if (state.get(ConveyorProperties.CONVEYOR) && conveyorOne != null && conveyorTwo != null) {
-            return direction == facing.getOpposite() && conveyorOne.isEmpty() && conveyorTwo.isEmpty();
+            if (conveyorOne != null && conveyorTwo != null) {
+                return direction==facing.getOpposite() && conveyorOne.isEmpty() && conveyorTwo.isEmpty();
+            }
         }
 
         return false;
@@ -81,7 +82,7 @@ public class SplitterBlock extends HorizontalFacingBlock implements IConveyorMac
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> stateManagerBuilder) {
-        stateManagerBuilder.add(new Property[]{FACING, ConveyorProperties.CONVEYOR});
+        stateManagerBuilder.add(FACING, ConveyorProperties.CONVEYOR);
     }
 
     @Override
