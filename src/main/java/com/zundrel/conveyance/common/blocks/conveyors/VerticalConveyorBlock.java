@@ -90,7 +90,8 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
         if (blockState.getBlock() != blockState2.getBlock()) {
             BlockEntity blockEntity_1 = world.getBlockEntity(blockPos);
             if (blockEntity_1 instanceof VerticalConveyorBlockEntity) {
-                ItemScatterer.spawn(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), ((VerticalConveyorBlockEntity) blockEntity_1).getStack());world.updateHorizontalAdjacent(blockPos, this);
+                ItemScatterer.spawn(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), ((VerticalConveyorBlockEntity) blockEntity_1).getStack());
+                world.updateComparators(blockPos, this);
             }
 
             world.updateNeighbors(blockPos, this);

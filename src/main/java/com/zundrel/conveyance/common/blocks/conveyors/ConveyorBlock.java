@@ -68,7 +68,9 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
-        if (!entity.onGround || (entity.getY() - blockPos.getY()) != (4F / 16F))
+    	BlockPos pos = new BlockPos(entity.getPos());
+
+    	if (!entity.method_24828() || (entity.getY() - blockPos.getY()) != (4F / 16F))
             return;
 
         if (entity instanceof PlayerEntity && entity.isSneaking())
@@ -76,7 +78,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
         Direction direction = blockState.get(FACING);
 
-        if (entity instanceof ItemEntity && entity.getBlockPos().equals(blockPos) && world.getBlockEntity(blockPos) instanceof ConveyorBlockEntity) {
+        if (entity instanceof ItemEntity && pos.equals(blockPos) && world.getBlockEntity(blockPos) instanceof ConveyorBlockEntity) {
             ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world.getBlockEntity(blockPos);
 
             if (blockEntity.isEmpty()) {
@@ -132,7 +134,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         else if (world.getBlockState(leftPos).getBlock() instanceof IConveyorMachine)
             newState = newState.with(ConveyorProperties.LEFT, true);
         else if (world.getBlockState(leftPos.down()).getBlock() instanceof VerticalConveyorBlock && !(world.getBlockState(leftPos.down()).getBlock() instanceof DownVerticalConveyorBlock) && world.getBlockState(leftPos.down()).get(FACING) == direction.rotateYClockwise() && world.getBlockState(leftPos.down()).get(ConveyorProperties.CONVEYOR))
-            newState = newState.with(ConveyorProperties.RIGHT, true);
+            newState = newState.with(ConveyorProperties.LEFT, true);
         else
             newState = newState.with(ConveyorProperties.LEFT, false);
 

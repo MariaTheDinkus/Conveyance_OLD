@@ -1,5 +1,7 @@
 package com.zundrel.conveyance.common.blocks.conveyors;
 
+import com.zundrel.conveyance.api.IConveyorMachine;
+import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.InserterBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -7,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class InserterBlock extends HorizontalFacingBlock implements BlockEntityProvider {
+public class InserterBlock extends HorizontalFacingBlock implements BlockEntityProvider, IConveyorMachine {
     public InserterBlock(Settings settings) {
         super(settings);
 
@@ -58,4 +61,18 @@ public class InserterBlock extends HorizontalFacingBlock implements BlockEntityP
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
         return this.getDefaultState().with(FACING, itemPlacementContext.getPlayer().isSneaking() ? itemPlacementContext.getPlayerFacing().getOpposite() : itemPlacementContext.getPlayerFacing());
     }
+
+	@Override
+	public void insert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
+		InserterBlockEntity inserterBlockEntity = (InserterBlockEntity) world.getBlockEntity(pos);
+
+		inserterBlockEntity.setInvStack(0, stack);
+	}
+
+	@Override
+	public boolean canInsert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
+		InserterBlockEntity inserterBlockEntity = (InserterBlockEntity) world.getBlockEntity(pos);
+
+		return inserterBlockEntity.canInsertInvStack(0, stack, direction);
+	}
 }

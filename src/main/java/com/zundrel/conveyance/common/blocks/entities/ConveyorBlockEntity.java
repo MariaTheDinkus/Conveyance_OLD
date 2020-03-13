@@ -2,7 +2,7 @@ package com.zundrel.conveyance.common.blocks.entities;
 
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.api.IConveyorMachine;
-import com.zundrel.conveyance.common.inventory.ConveyorInventory;
+import com.zundrel.conveyance.common.inventory.SingularStackInventory;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -17,7 +17,7 @@ import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class ConveyorBlockEntity extends BlockEntity implements ConveyorInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
+public class ConveyorBlockEntity extends BlockEntity implements SingularStackInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
     private DefaultedList<ItemStack> stacks = DefaultedList.ofSize(1, ItemStack.EMPTY);
     protected boolean front = false;
     protected boolean down = false;
@@ -146,7 +146,7 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorInventor
     public ItemStack removeStack() {
         position = 0;
         prevPosition = 0;
-        return ConveyorInventory.super.removeStack();
+        return SingularStackInventory.super.removeStack();
     }
 
     @Override

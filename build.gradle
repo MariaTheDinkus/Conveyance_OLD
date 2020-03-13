@@ -52,10 +52,6 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
-	modCompile "alexiil.mc.lib:libblockattributes-items:${project.lba_version}"
-	include "alexiil.mc.lib:libblockattributes-core:${project.lba_version}"
-	include "alexiil.mc.lib:libblockattributes-items:${project.lba_version}"
 
 	modImplementation "com.github.Zundrel:Wrenchable:${project.wrenchable_version}"
     include "com.github.Zundrel:Wrenchable:${project.wrenchable_version}"
