@@ -1,0 +1,20 @@
+{
+	"itemGroup.conveyance.general": "Conveyance",
+	
+	"block.conveyance.alternator": "Alternador",
+	"block.conveyance.splitter": "Separador",
+	"block.conveyance.inserter": "Transmisor",
+	"block.conveyance.conveyor": "Cinta transportadora",
+	"block.conveyance.conveyor_vertical": "Cinta transportadora vertical",
+	"block.conveyance.conveyor_vertical_down": "Cinta transportadora vertical (hacia abajo)",
+	"block.conveyance.fast_conveyor": "Cinta transportadora rápida",
+	"block.conveyance.fast_conveyor_vertical": "Cinta transportadora vertical rápida",
+	"block.conveyance.fast_conveyor_vertical_down": "Cinta transportadora vertical rápida (hacia abajo)",
+	"block.conveyance.express_conveyor": "Cinta transportadora exprés",
+	"block.conveyance.express_conveyor_vertical": "Cinta transportadora vertical exprés",
+	"block.conveyance.express_conveyor_vertical_down": "Cinta transportadora vertical exprés (hacia abajo)",
+	"block.conveyance.catwalk": "Pasarela",
+	"block.conveyance.catwalk_stairs": "Escaleras de pasarela",
+	
+	"item.conveyance.wrench": "Llave inglesa"
+}
