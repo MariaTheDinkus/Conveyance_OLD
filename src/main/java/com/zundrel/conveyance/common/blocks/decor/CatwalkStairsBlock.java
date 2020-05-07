@@ -5,7 +5,7 @@ import com.zundrel.conveyance.common.utilities.RotationUtilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.entity.EntityContext;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
@@ -56,12 +56,7 @@ public class CatwalkStairsBlock extends HorizontalFacingBlock {
     }
 
     @Override
-    public boolean isSimpleFullBlock(BlockState state, BlockView view, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext ePos) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ePos) {
         Direction facing = state.get(FACING);
 		Box step1 = new Box(0, 0, (12F / 16F), 1, (3F / 16F), 1);
 		Box step2 = new Box(0, 0, (8F / 16F), 1, (7F / 16F), (12F / 16F));

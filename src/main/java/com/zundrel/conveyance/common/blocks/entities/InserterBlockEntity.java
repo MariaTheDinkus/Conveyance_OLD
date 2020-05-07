@@ -3,6 +3,7 @@ package com.zundrel.conveyance.common.blocks.entities;
 import com.zundrel.conveyance.common.inventory.SingularStackSidedInventory;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -12,8 +13,8 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 
 import java.util.stream.IntStream;
@@ -43,7 +44,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackSid
 				if (!this.isInventoryFull(inventory, inputSide)) {
 					if (!isEmpty()) {
 						//ItemStack itemStack = this.getStack().copy();
-						ItemStack itemStack2 = transfer(this, inventory, this.takeInvStack(0, getStack().getCount()), inputSide);
+						ItemStack itemStack2 = transfer(this, inventory, this.removeStack(0, getStack().getCount()), inputSide);
 						if (itemStack2.isEmpty()) {
 							inventory.markDirty();
 						}
@@ -77,12 +78,12 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackSid
 	}
 
 	private static IntStream getAvailableSlots(Inventory inventory, Direction side) {
-		return inventory instanceof SidedInventory ? IntStream.of(((SidedInventory)inventory).getInvAvailableSlots(side)) : IntStream.range(0, inventory.getInvSize());
+		return inventory instanceof SidedInventory ? IntStream.of(((SidedInventory)inventory).getAvailableSlots(side)) : IntStream.range(0, inventory.size());
 	}
 
 	private boolean isInventoryFull(Inventory inv, Direction direction) {
 		return getAvailableSlots(inv, direction).allMatch((i) -> {
-			ItemStack itemStack = inv.getInvStack(i);
+			ItemStack itemStack = inv.getStack(i);
 			return itemStack.getCount() >= itemStack.getMaxCount();
 		});
 	}
@@ -90,13 +91,13 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackSid
 	public static ItemStack transfer(Inventory from, Inventory to, ItemStack stack, Direction side) {
 		if (to instanceof SidedInventory && side != null) {
 			SidedInventory sidedInventory = (SidedInventory)to;
-			int[] is = sidedInventory.getInvAvailableSlots(side);
+			int[] is = sidedInventory.getAvailableSlots(side);
 
 			for(int i = 0; i < is.length && !stack.isEmpty(); ++i) {
 				stack = transfer(from, to, stack, is[i], side);
 			}
 		} else {
-			int j = to.getInvSize();
+			int j = to.size();
 
 			for(int k = 0; k < j && !stack.isEmpty(); ++k) {
 				stack = transfer(from, to, stack, k, side);
@@ -107,10 +108,10 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackSid
 	}
 
 	private static boolean canInsert(Inventory inventory, ItemStack stack, int slot, Direction side) {
-		if (!inventory.isValidInvStack(slot, stack)) {
+		if (!inventory.isValid(slot, stack)) {
 			return false;
 		} else {
-			return !(inventory instanceof SidedInventory) || ((SidedInventory)inventory).canInsertInvStack(slot, stack, side);
+			return !(inventory instanceof SidedInventory) || ((SidedInventory)inventory).canInsert(slot, stack, side);
 		}
 	}
 
@@ -127,12 +128,12 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackSid
 	}
 
 	private static ItemStack transfer(Inventory from, Inventory to, ItemStack stack, int slot, Direction direction) {
-		ItemStack itemStack = to.getInvStack(slot);
+		ItemStack itemStack = to.getStack(slot);
 		if (canInsert(to, stack, slot, direction)) {
 			boolean bl = false;
-			boolean bl2 = to.isInvEmpty();
+			boolean bl2 = to.isEmpty();
 			if (itemStack.isEmpty()) {
-				to.setInvStack(slot, stack);
+				to.setStack(slot, stack);
 				stack = ItemStack.EMPTY;
 				bl = true;
 			} else if (canMergeItems(itemStack, stack)) {
@@ -160,15 +161,15 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackSid
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag) {
-        super.fromTag(compoundTag);
-		this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
+    public void fromTag(BlockState state, CompoundTag compoundTag) {
+        super.fromTag(state, compoundTag);
+		this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
 		Inventories.fromTag(compoundTag, this.inventory);
     }
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(compoundTag);
+        fromTag(getCachedState(), compoundTag);
     }
 
     @Override

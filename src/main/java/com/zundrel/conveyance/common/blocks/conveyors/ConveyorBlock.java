@@ -7,13 +7,9 @@ import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -70,7 +66,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
     	BlockPos pos = new BlockPos(entity.getPos());
 
-    	if (!entity.method_24828() || (entity.getY() - blockPos.getY()) != (4F / 16F))
+    	if (!entity.isOnGround() || (entity.getY() - blockPos.getY()) != (4F / 16F))
             return;
 
         if (entity instanceof PlayerEntity && entity.isSneaking())
@@ -194,11 +190,6 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public boolean onBlockAction(BlockState blockState_1, World world_1, BlockPos blockPos_1, int int_1, int int_2) {
-        return super.onBlockAction(blockState_1, world_1, blockPos_1, int_1, int_2);
-    }
-
-    @Override
     public ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
         ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world.getBlockEntity(blockPos);
 
@@ -234,12 +225,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public boolean isSimpleFullBlock(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
-        return false;
-    }
-
-    @Override
-    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, EntityContext entityContext) {
+    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext entityContext) {
         VoxelShape conveyor = VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
         if (blockState.get(ConveyorProperties.UP)) {
             return VoxelShapes.fullCube();

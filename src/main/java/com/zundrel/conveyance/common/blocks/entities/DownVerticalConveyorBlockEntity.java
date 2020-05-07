@@ -3,6 +3,7 @@ package com.zundrel.conveyance.common.blocks.entities;
 import com.zundrel.conveyance.api.IConveyor;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -130,8 +131,8 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag) {
-        super.fromTag(compoundTag);
+    public void fromTag(BlockState state, CompoundTag compoundTag) {
+        super.fromTag(state, compoundTag);
         down = compoundTag.getBoolean("down_vertical");
         horizontalPosition = compoundTag.getInt("horizontalPosition");
         prevHorizontalPosition = horizontalPosition = compoundTag.getInt("horizontalPosition");
@@ -139,7 +140,7 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(compoundTag);
+        fromTag(getCachedState(), compoundTag);
     }
 
     @Override

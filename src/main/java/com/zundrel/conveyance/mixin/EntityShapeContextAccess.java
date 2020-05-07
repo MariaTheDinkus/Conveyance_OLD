@@ -1,12 +1,12 @@
 package com.zundrel.conveyance.mixin;
 
-import net.minecraft.entity.EntityContextImpl;
+import net.minecraft.block.EntityShapeContext;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(EntityContextImpl.class)
-public interface EntityContextImplAccess {
+@Mixin(EntityShapeContext.class)
+public interface EntityShapeContextAccess {
     @Accessor
     Item getHeldItem();
 }

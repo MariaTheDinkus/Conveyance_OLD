@@ -66,13 +66,13 @@ public class InserterBlock extends HorizontalFacingBlock implements BlockEntityP
 	public void insert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
 		InserterBlockEntity inserterBlockEntity = (InserterBlockEntity) world.getBlockEntity(pos);
 
-		inserterBlockEntity.setInvStack(0, stack);
+		inserterBlockEntity.setStack(0, stack);
 	}
 
 	@Override
 	public boolean canInsert(World world, BlockPos pos, BlockState state, ConveyorBlockEntity blockEntity, ItemStack stack, Direction direction) {
 		InserterBlockEntity inserterBlockEntity = (InserterBlockEntity) world.getBlockEntity(pos);
 
-		return inserterBlockEntity.canInsertInvStack(0, stack, direction);
+		return inserterBlockEntity.canInsert(0, stack, direction);
 	}
 }

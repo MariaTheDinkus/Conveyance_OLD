@@ -6,14 +6,15 @@ import com.zundrel.conveyance.common.inventory.SingularStackInventory;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -142,7 +143,12 @@ public class ConveyorBlockEntity extends BlockEntity implements SingularStackInv
         return stacks;
     }
 
-    @Override
+	@Override
+	public int size() {
+		return 1;
+	}
+
+	@Override
     public ItemStack removeStack() {
         position = 0;
         prevPosition = 0;
@@ -209,9 +215,9 @@ public class ConveyorBlockEntity extends BlockEntity implements SingularStackInv
         sync();
     }
 
-    @Override
-    public void fromTag(CompoundTag compoundTag) {
-        super.fromTag(compoundTag);
+	@Override
+    public void fromTag(BlockState state, CompoundTag compoundTag) {
+        super.fromTag(state, compoundTag);
         clear();
         setStack(ItemStack.fromTag(compoundTag.getCompound("stack")));
         front = compoundTag.getBoolean("front");
@@ -223,7 +229,7 @@ public class ConveyorBlockEntity extends BlockEntity implements SingularStackInv
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(compoundTag);
+        fromTag(getCachedState(), compoundTag);
     }
 
     @Override

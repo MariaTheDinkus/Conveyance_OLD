@@ -6,8 +6,8 @@ import com.zundrel.conveyance.common.blocks.decor.CatwalkBlock;
 import com.zundrel.conveyance.common.blocks.decor.CatwalkStairsBlock;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayer;
@@ -19,22 +19,22 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ConveyanceBlocks {
-    public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
-    public static InserterBlock INSERTER = register("inserter", new InserterBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build()));
-    public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK).build()));
+    public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK)));
+    public static InserterBlock INSERTER = register("inserter", new InserterBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
+    public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK)));
 
-    public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 16));
-    public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 16));
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 16));
-    public static ConveyorBlock FAST_CONVEYOR = register("fast_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 8));
-    public static VerticalConveyorBlock VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 8));
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 8));
-    public static ConveyorBlock EXPRESS_CONVEYOR = register("express_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 4));
-    public static VerticalConveyorBlock VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 4));
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build(), 4));
+    public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
+    public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
+    public static ConveyorBlock FAST_CONVEYOR = register("fast_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
+    public static VerticalConveyorBlock VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
+    public static ConveyorBlock EXPRESS_CONVEYOR = register("express_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
+    public static VerticalConveyorBlock VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
 
-    public static CatwalkBlock CATWALK = register("catwalk", new CatwalkBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build()));
-    public static CatwalkStairsBlock CATWALK_STAIRS = register("catwalk_stairs", new CatwalkStairsBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque().build()));
+    public static CatwalkBlock CATWALK = register("catwalk", new CatwalkBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
+    public static CatwalkStairsBlock CATWALK_STAIRS = register("catwalk_stairs", new CatwalkStairsBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
 
     public static void init() {
 

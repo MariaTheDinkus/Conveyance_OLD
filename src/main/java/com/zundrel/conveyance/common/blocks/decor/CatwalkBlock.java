@@ -1,14 +1,14 @@
 package com.zundrel.conveyance.common.blocks.decor;
 
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
-import com.zundrel.conveyance.mixin.EntityContextImplAccess;
+import com.zundrel.conveyance.mixin.EntityShapeContextAccess;
 import com.zundrel.wrenchable.WrenchableUtilities;
 import com.zundrel.wrenchable.block.BlockWrenchable;
 import grondag.fermion.modkeys.api.ModKeys;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityContext;
-import net.minecraft.entity.EntityContextImpl;
+import net.minecraft.block.EntityShapeContext;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
@@ -84,13 +84,7 @@ public class CatwalkBlock extends Block implements BlockWrenchable {
     }
 
     @Override
-    public boolean isSimpleFullBlock(BlockState state, BlockView view, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext ePos) {
-        Item heldItem = ((EntityContextImplAccess) ePos).getHeldItem();
+    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Box bottom = new Box(0, 0, 0, 1, (1F / 16F), 1);
         Box north = new Box(0, 0, 0, 1, 1, (1F / 16F));
         Box east = new Box((15F / 16F), 0, 0, 1, 1, 1);
@@ -98,11 +92,19 @@ public class CatwalkBlock extends Block implements BlockWrenchable {
         Box west = new Box(0, 0, 0, (1F / 16F), 1, 1);
         VoxelShape fullShape = VoxelShapes.union(VoxelShapes.cuboid(bottom), VoxelShapes.cuboid(north), VoxelShapes.cuboid(east), VoxelShapes.cuboid(south), VoxelShapes.cuboid(west));
 
-        return (ePos instanceof EntityContextImpl && WrenchableUtilities.isWrench(heldItem)) ? fullShape : getCollisionShape(state, view, pos, ePos);
+        if (context instanceof EntityShapeContext) {
+			Item heldItem = ((EntityShapeContextAccess) context).getHeldItem();
+
+			if (WrenchableUtilities.isWrench(heldItem)) {
+				return fullShape;
+			}
+		}
+
+        return getCollisionShape(state, view, pos, context);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, EntityContext ePos) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ePos) {
         Box bottom = new Box(0, 0, 0, 1, (1F / 16F), 1);
         Box north = new Box(0, 0, 0, 1, 1, (1F / 16F));
         Box east = new Box((15F / 16F), 0, 0, 1, 1, 1);

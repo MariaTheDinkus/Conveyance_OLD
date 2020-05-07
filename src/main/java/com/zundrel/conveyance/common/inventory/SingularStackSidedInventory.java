@@ -15,12 +15,12 @@ public interface SingularStackSidedInventory extends SingularStackInventory, Sid
 	Direction[] getExtractionSides();
 
 	@Override
-	default int[] getInvAvailableSlots(Direction side) {
+	default int[] getAvailableSlots(Direction side) {
 		return new int[]{0};
 	}
 
 	@Override
-	default boolean canInsertInvStack(int slot, ItemStack stack, Direction dir) {
+	default boolean canInsert(int slot, ItemStack stack, Direction dir) {
 		boolean matchesSide = false;
 		for (int i = 0; i < getInsertionSides().length; i++) {
 			if (dir == getInsertionSides()[i]) {
@@ -33,7 +33,7 @@ public interface SingularStackSidedInventory extends SingularStackInventory, Sid
 	}
 
 	@Override
-	default boolean canExtractInvStack(int slot, ItemStack stack, Direction dir) {
+	default boolean canExtract(int slot, ItemStack stack, Direction dir) {
 		boolean matchesSide = false;
 		for (int i = 0; i < getExtractionSides().length; i++) {
 			if (dir == getExtractionSides()[i]) {
