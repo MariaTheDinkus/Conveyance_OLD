@@ -1,7 +1,7 @@
 package com.zundrel.conveyance.client.renderers;
 
 import com.zundrel.conveyance.api.ConveyorType;
-import com.zundrel.conveyance.api.IConveyor;
+import com.zundrel.conveyance.api.Conveyor;
 import com.zundrel.conveyance.api.IConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.conveyors.ConveyorProperties;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
@@ -20,8 +20,8 @@ public class DownVerticalConveyorBlockEntityRenderer extends BlockEntityRenderer
 
     @Override
     public void render(DownVerticalConveyorBlockEntity blockEntity, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int i1) {
-        int speed = ((IConveyor) blockEntity.getCachedState().getBlock()).getSpeed();
-        ConveyorType type = ((IConveyor) blockEntity.getCachedState().getBlock()).getType();
+        int speed = ((Conveyor) blockEntity.getCachedState().getBlock()).getSpeed();
+        ConveyorType type = ((Conveyor) blockEntity.getCachedState().getBlock()).getType();
         boolean conveyor = blockEntity.getCachedState().get(ConveyorProperties.CONVEYOR);
         boolean front = blockEntity.getCachedState().get(ConveyorProperties.FRONT);
 

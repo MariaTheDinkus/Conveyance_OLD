@@ -1,7 +1,7 @@
 package com.zundrel.conveyance.client.renderers;
 
 import com.zundrel.conveyance.api.ConveyorType;
-import com.zundrel.conveyance.api.IConveyor;
+import com.zundrel.conveyance.api.Conveyor;
 import com.zundrel.conveyance.api.IConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -17,8 +17,8 @@ public class VerticalConveyorBlockEntityRenderer extends BlockEntityRenderer<Ver
 
     @Override
     public void render(VerticalConveyorBlockEntity blockEntity, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int i1) {
-        int speed = ((IConveyor) blockEntity.getCachedState().getBlock()).getSpeed();
-        ConveyorType type = ((IConveyor) blockEntity.getCachedState().getBlock()).getType();
+        int speed = ((Conveyor) blockEntity.getCachedState().getBlock()).getSpeed();
+        ConveyorType type = ((Conveyor) blockEntity.getCachedState().getBlock()).getType();
 
         if (!blockEntity.getWorld().getBlockState(blockEntity.getPos()).isAir() && !blockEntity.isEmpty()) {
             ItemStack stack = blockEntity.getStack();

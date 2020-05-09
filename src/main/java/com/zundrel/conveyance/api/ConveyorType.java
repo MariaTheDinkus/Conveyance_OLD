@@ -3,9 +3,9 @@ package com.zundrel.conveyance.api;
 import net.minecraft.util.StringIdentifiable;
 
 public enum ConveyorType implements StringIdentifiable {
-    NORMAL(""),
-    VERTICAL(""),
-    DOWN_VERTICAL("");
+    NORMAL("normal"),
+    VERTICAL("vertical"),
+    DOWN_VERTICAL("down_vertical");
 
     String name;
 

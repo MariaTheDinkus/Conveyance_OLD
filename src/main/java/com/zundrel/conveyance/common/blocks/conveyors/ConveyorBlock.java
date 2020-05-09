@@ -1,10 +1,10 @@
 package com.zundrel.conveyance.common.blocks.conveyors;
 
+import com.zundrel.conveyance.api.Conveyable;
+import com.zundrel.conveyance.api.Conveyor;
+import com.zundrel.conveyance.api.ConveyorConveyable;
 import com.zundrel.conveyance.api.ConveyorType;
-import com.zundrel.conveyance.api.IConveyor;
-import com.zundrel.conveyance.api.IConveyorMachine;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
-import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
 import net.minecraft.block.*;
@@ -27,7 +27,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityProvider, IConveyor {
+public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityProvider, Conveyor {
     private int speed;
 
     public ConveyorBlock(Settings settings, int speed) {
@@ -88,33 +88,33 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     public void onBlockAdded(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean boolean_1) {
-        Direction facing = blockState.get(FACING);
-
-        world.updateNeighbors(blockPos, this);
-        for (Direction direction : Direction.values()) {
-            world.updateNeighbor(blockPos.offset(direction).down(1), this, blockPos);
-        }
+		updateDiagonals(world, this, blockPos);
     }
 
-    @Override
-    public void onBlockRemoved(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean boolean_1) {
-        Direction facing = blockState.get(FACING);
-        if (blockState.getBlock() != blockState2.getBlock()) {
-            BlockEntity blockEntity_1 = world.getBlockEntity(blockPos);
-            if (blockEntity_1 instanceof ConveyorBlockEntity) {
-                ItemScatterer.spawn(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), ((ConveyorBlockEntity) blockEntity_1).getStack());
-            }
+	@Override
+	public void onBlockRemoved(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean boolean_1) {
+		if (blockState.getBlock() != blockState2.getBlock()) {
+			BlockEntity blockEntity_1 = world.getBlockEntity(blockPos);
+			if (blockEntity_1 instanceof ConveyorBlockEntity) {
+				((ConveyorBlockEntity) blockEntity_1).setRemoved(true);
+				ItemScatterer.spawn(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), ((ConveyorBlockEntity) blockEntity_1).getStack());
+				world.updateComparators(blockPos, this);
+			}
 
-            world.updateNeighbors(blockPos, this);
-            for (Direction direction : Direction.values()) {
-                world.updateNeighbor(blockPos.offset(direction).down(1), this, blockPos);
-            }
+			super.onBlockRemoved(blockState, world, blockPos, blockState2, boolean_1);
+		}
 
-            super.onBlockRemoved(blockState, world, blockPos, blockState2, boolean_1);
-        }
-    }
+		updateDiagonals(world, this, blockPos);
+	}
 
-    @Override
+	@Override
+	public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+
+
+		super.afterBreak(world, player, pos, state, blockEntity, stack);
+	}
+
+	@Override
     public BlockState getStateForNeighborUpdate(BlockState blockState, Direction fromDirection, BlockState fromState, IWorld world, BlockPos blockPos, BlockPos fromPos) {
         BlockState newState = blockState;
         Direction direction = newState.get(FACING);
@@ -123,29 +123,26 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
         BlockPos rightPos = blockPos.offset(direction.rotateYClockwise());
         BlockPos upPos = blockPos.up();
 
-        if (world.getBlockState(leftPos).getBlock() instanceof ConveyorBlock && world.getBlockState(leftPos).get(FACING) == direction.rotateYClockwise())
+        BlockEntity leftBlockEntity = world.getBlockEntity(leftPos);
+		BlockEntity leftDownBlockEntity = world.getBlockEntity(leftPos.down());
+        if (leftBlockEntity instanceof Conveyable && ((Conveyable) leftBlockEntity).getOutputSide(getType()) == direction.rotateYClockwise())
             newState = newState.with(ConveyorProperties.LEFT, true);
-        else if (world.getBlockState(leftPos).getBlock() instanceof DownVerticalConveyorBlock && world.getBlockState(leftPos).get(FACING) != direction && world.getBlockState(leftPos).get(ConveyorProperties.FRONT))
-            newState = newState.with(ConveyorProperties.LEFT, true);
-        else if (world.getBlockState(leftPos).getBlock() instanceof IConveyorMachine)
-            newState = newState.with(ConveyorProperties.LEFT, true);
-        else if (world.getBlockState(leftPos.down()).getBlock() instanceof VerticalConveyorBlock && !(world.getBlockState(leftPos.down()).getBlock() instanceof DownVerticalConveyorBlock) && world.getBlockState(leftPos.down()).get(FACING) == direction.rotateYClockwise() && world.getBlockState(leftPos.down()).get(ConveyorProperties.CONVEYOR))
+        else if (leftDownBlockEntity instanceof ConveyorConveyable && ((ConveyorConveyable) leftDownBlockEntity).getConveyorType() == ConveyorType.VERTICAL && ((ConveyorConveyable) leftDownBlockEntity).getOutputSide(getType()) == direction.rotateYClockwise())
             newState = newState.with(ConveyorProperties.LEFT, true);
         else
             newState = newState.with(ConveyorProperties.LEFT, false);
 
-        if (world.getBlockState(rightPos).getBlock() instanceof ConveyorBlock && world.getBlockState(rightPos).get(FACING) == direction.rotateYCounterclockwise())
-            newState = newState.with(ConveyorProperties.RIGHT, true);
-        else if (world.getBlockState(rightPos).getBlock() instanceof DownVerticalConveyorBlock && world.getBlockState(rightPos).get(FACING) != direction && world.getBlockState(rightPos).get(ConveyorProperties.FRONT))
-            newState = newState.with(ConveyorProperties.LEFT, true);
-        else if (world.getBlockState(rightPos).getBlock() instanceof IConveyorMachine)
-            newState = newState.with(ConveyorProperties.RIGHT, true);
-        else if (world.getBlockState(rightPos.down()).getBlock() instanceof VerticalConveyorBlock && !(world.getBlockState(rightPos.down()).getBlock() instanceof DownVerticalConveyorBlock) && world.getBlockState(rightPos.down()).get(FACING) == direction.rotateYCounterclockwise() && world.getBlockState(rightPos.down()).get(ConveyorProperties.CONVEYOR))
-            newState = newState.with(ConveyorProperties.RIGHT, true);
-        else
-            newState = newState.with(ConveyorProperties.RIGHT, false);
+		BlockEntity rightBlockEntity = world.getBlockEntity(rightPos);
+		BlockEntity rightDownBlockEntity = world.getBlockEntity(rightPos.down());
+		if (rightBlockEntity instanceof Conveyable && ((Conveyable) rightBlockEntity).getOutputSide(getType()) == direction.rotateYCounterclockwise())
+			newState = newState.with(ConveyorProperties.RIGHT, true);
+		else if (rightDownBlockEntity instanceof ConveyorConveyable && ((ConveyorConveyable) rightDownBlockEntity).getConveyorType() == ConveyorType.VERTICAL && ((ConveyorConveyable) rightDownBlockEntity).getOutputSide(getType()) == direction.rotateYCounterclockwise())
+			newState = newState.with(ConveyorProperties.RIGHT, true);
+		else
+			newState = newState.with(ConveyorProperties.RIGHT, false);
 
-        if (world.getBlockState(upPos).getBlock() instanceof ConveyorBlock || world.getBlockState(upPos).getBlock() instanceof VerticalConveyorBlock && world.getBlockState(upPos).get(ConveyorProperties.FRONT))
+		BlockEntity upBlockEntity = world.getBlockEntity(upPos);
+        if (upBlockEntity instanceof ConveyorConveyable && ((ConveyorConveyable) upBlockEntity).getConveyorType() == ConveyorType.NORMAL)
             newState = newState.with(ConveyorProperties.UP, true);
         else
             newState = newState.with(ConveyorProperties.UP, false);
@@ -155,45 +152,29 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos blockPos2, boolean boolean_1) {
-        BlockState newState = blockState.getStateForNeighborUpdate(null, blockState, world, blockPos, blockPos2);
-        Direction direction = newState.get(FACING);
+        Direction direction = blockState.get(FACING);
         ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) world.getBlockEntity(blockPos);
 
         BlockPos frontPos = blockPos.offset(direction);
 
-        if (world.getBlockEntity(blockPos.offset(direction)) instanceof ConveyorBlockEntity)
+		BlockEntity frontBlockEntity = world.getBlockEntity(blockPos.offset(direction));
+        if (frontBlockEntity instanceof Conveyable && ((Conveyable) frontBlockEntity).validInputSide(direction.getOpposite()))
             conveyorBlockEntity.setFront(true);
         else
             conveyorBlockEntity.setFront(false);
 
-        if (world.getBlockState(blockPos.offset(direction)).getBlock() instanceof IConveyorMachine)
-            conveyorBlockEntity.setFront(true);
-        else if (!conveyorBlockEntity.hasFront())
-            conveyorBlockEntity.setFront(false);
-
-        if (world.getBlockEntity(blockPos.offset(direction).down(1)) instanceof DownVerticalConveyorBlockEntity)
+		BlockEntity downBlockEntity = world.getBlockEntity(blockPos.offset(direction).down());
+        if (downBlockEntity instanceof Conveyable && ((Conveyable) downBlockEntity).validInputSide(Direction.UP))
             conveyorBlockEntity.setDown(true);
         else
             conveyorBlockEntity.setDown(false);
-
-        if (!conveyorBlockEntity.hasDown() && world.getBlockState(frontPos).getBlock() instanceof ConveyorBlock && world.getBlockState(frontPos.offset(direction)).getBlock() instanceof ConveyorBlock){
-            Direction frontDirection = world.getBlockState(frontPos).get(FACING);
-            Direction acrossDirection = world.getBlockState(frontPos.offset(direction)).get(FACING);
-            if (acrossDirection == direction.getOpposite() && (frontDirection == direction.rotateYClockwise() || frontDirection == direction.rotateYCounterclockwise())) {
-                conveyorBlockEntity.setAcross(true);
-            } else
-                conveyorBlockEntity.setAcross(false);
-        } else
-            conveyorBlockEntity.setAcross(false);
-
-        world.setBlockState(blockPos, newState);
     }
 
     @Override
     public ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
         ConveyorBlockEntity blockEntity = (ConveyorBlockEntity) world.getBlockEntity(blockPos);
 
-        if (!playerEntity.getStackInHand(hand).isEmpty() && (Block.getBlockFromItem(playerEntity.getStackInHand(hand).getItem()) instanceof IConveyor || playerEntity.getStackInHand(hand).getItem() instanceof WrenchItem)) {
+        if (!playerEntity.getStackInHand(hand).isEmpty() && (Block.getBlockFromItem(playerEntity.getStackInHand(hand).getItem()) instanceof Conveyor || playerEntity.getStackInHand(hand).getItem() instanceof WrenchItem)) {
             return ActionResult.PASS;
         } else if (!playerEntity.getStackInHand(hand).isEmpty() && blockEntity.isEmpty()) {
             blockEntity.setStack(playerEntity.getStackInHand(hand));
@@ -216,7 +197,13 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return this.getDefaultState().with(FACING, itemPlacementContext.getPlayer().isSneaking() ? itemPlacementContext.getPlayerFacing().getOpposite() : itemPlacementContext.getPlayerFacing());
+    	World world = itemPlacementContext.getWorld();
+        BlockPos blockPos = itemPlacementContext.getBlockPos();
+    	BlockState newState = this.getDefaultState().with(FACING, itemPlacementContext.getPlayer().isSneaking() ? itemPlacementContext.getPlayerFacing().getOpposite() : itemPlacementContext.getPlayerFacing());
+
+    	newState = newState.getStateForNeighborUpdate(null, newState, world, blockPos, blockPos);
+
+		return newState;
     }
 
     @Override

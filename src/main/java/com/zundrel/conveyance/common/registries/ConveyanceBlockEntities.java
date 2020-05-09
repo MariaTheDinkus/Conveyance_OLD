@@ -3,7 +3,7 @@ package com.zundrel.conveyance.common.registries;
 import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.DownVerticalConveyorBlockEntity;
-import com.zundrel.conveyance.common.blocks.entities.InserterBlockEntity;
+import com.zundrel.conveyance.common.blocks.entities.TestBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -14,7 +14,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.function.Supplier;
 
 public class ConveyanceBlockEntities {
-    public static BlockEntityType INSERTER = register("inserter", InserterBlockEntity::new, ConveyanceBlocks.INSERTER);
+	public static BlockEntityType TEST = register("test", TestBlockEntity::new, ConveyanceBlocks.TEST);
     public static BlockEntityType CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ConveyanceBlocks.CONVEYOR, ConveyanceBlocks.FAST_CONVEYOR, ConveyanceBlocks.EXPRESS_CONVEYOR);
     public static BlockEntityType VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ConveyanceBlocks.VERTICAL_CONVEYOR, ConveyanceBlocks.VERTICAL_FAST_CONVEYOR, ConveyanceBlocks.VERTICAL_EXPRESS_CONVEYOR);
     public static BlockEntityType DOWN_VERTICAL_CONVEYOR = register("down_vertical_conveyor", DownVerticalConveyorBlockEntity::new, ConveyanceBlocks.DOWN_VERTICAL_CONVEYOR, ConveyanceBlocks.DOWN_VERTICAL_FAST_CONVEYOR, ConveyanceBlocks.DOWN_VERTICAL_EXPRESS_CONVEYOR);

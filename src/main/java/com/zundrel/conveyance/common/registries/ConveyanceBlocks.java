@@ -19,10 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ConveyanceBlocks {
-    public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK)));
-    public static InserterBlock INSERTER = register("inserter", new InserterBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
-    public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.IRON_BLOCK)));
-
+	public static TestingBlock TEST = register("test", new TestingBlock(FabricBlockSettings.copy(Blocks.STONE)));
     public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
     public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
     public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
@@ -42,9 +39,7 @@ public class ConveyanceBlocks {
     
     @Environment(EnvType.CLIENT)
     public static void registerRenderLayers() {
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ALTERNATOR, INSERTER, SPLITTER);
-
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), CONVEYOR, VERTICAL_CONVEYOR, DOWN_VERTICAL_CONVEYOR,
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), CONVEYOR, VERTICAL_CONVEYOR, DOWN_VERTICAL_CONVEYOR,
                 FAST_CONVEYOR, VERTICAL_FAST_CONVEYOR, DOWN_VERTICAL_FAST_CONVEYOR,
                 EXPRESS_CONVEYOR, VERTICAL_EXPRESS_CONVEYOR, DOWN_VERTICAL_EXPRESS_CONVEYOR);
 
