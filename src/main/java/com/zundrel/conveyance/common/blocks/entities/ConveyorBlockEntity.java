@@ -24,6 +24,7 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
     private DefaultedList<ItemStack> stacks = DefaultedList.ofSize(1, ItemStack.EMPTY);
     protected boolean front = false;
     protected boolean down = false;
+    protected boolean across = false;
     protected int position = 0;
     protected int prevPosition = 0;
     protected boolean hasBeenRemoved = false;
@@ -38,11 +39,19 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
 
     @Override
     public void tick() {
-        Direction direction = getOutputSide(ConveyorType.NORMAL);
+		Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
         int speed = ((Conveyor) getCachedState().getBlock()).getSpeed();
 
 		if (!isEmpty()) {
-			if (front) {
+			if (across) {
+				BlockPos frontPos = getPos().offset(direction);
+				BlockPos frontAcrossPos = frontPos.offset(direction);
+				if (getWorld().getBlockEntity(frontPos) instanceof ConveyorConveyable && getWorld().getBlockEntity(frontAcrossPos) instanceof ConveyorConveyable) {
+					Conveyable conveyable = (Conveyable) getWorld().getBlockEntity(frontPos);
+					Conveyable acrossConveyable = (Conveyable) getWorld().getBlockEntity(frontAcrossPos);
+					handleMovementAcross(conveyable, acrossConveyable, speed, true);
+				}
+			} else if (front) {
 				BlockPos frontPos = getPos().offset(direction);
 				if (getWorld().getBlockEntity(frontPos) instanceof Conveyable) {
 					Conveyable conveyable = (Conveyable) getWorld().getBlockEntity(frontPos);
@@ -81,6 +90,35 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
 		}
 	}
 
+	public void handleMovementAcross(Conveyable conveyable, Conveyable acrossConveyable, int speed, boolean transition) {
+		if (conveyable.accepts(getStack())) {
+			if (position < speed) {
+				if (conveyable instanceof ConveyorConveyable && acrossConveyable instanceof ConveyorConveyable) {
+					ConveyorConveyable conveyor = (ConveyorConveyable) conveyable;
+					ConveyorConveyable acrossConveyor = (ConveyorConveyable) acrossConveyable;
+
+					if (position < speed && acrossConveyor.getPosition() == 0) {
+						setPosition(getPosition() + 1);
+					} else {
+						prevPosition = position;
+					}
+				}
+			} else if (transition && position >= speed) {
+				conveyable.give(getStack());
+				removeStack();
+			}
+		} else if (conveyable instanceof ConveyorConveyable && acrossConveyable instanceof ConveyorConveyable) {
+			ConveyorConveyable conveyor = (ConveyorConveyable) conveyable;
+			ConveyorConveyable acrossConveyor = (ConveyorConveyable) acrossConveyable;
+
+			if (position < speed && acrossConveyor.getPosition() == 0 && position + 4 < conveyor.getPosition() && conveyor.getPosition() > 4) {
+				setPosition(getPosition() + 1);
+			} else {
+				prevPosition = position;
+			}
+		}
+	}
+
 	@Override
 	public boolean hasBeenRemoved() {
 		return hasBeenRemoved;
@@ -107,8 +145,8 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
 	}
 
 	@Override
-	public Direction getOutputSide(ConveyorType type) {
-		return getCachedState().get(HorizontalFacingBlock.FACING);
+	public boolean isOutputSide(Direction direction, ConveyorType type) {
+		return getCachedState().get(HorizontalFacingBlock.FACING) == direction;
 	}
 
 	@Override
@@ -156,7 +194,15 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
         markDirty();
     }
 
-    @Override
+	public boolean hasAcross() {
+		return across;
+	}
+
+	public void setAcross(boolean across) {
+		this.across = across;
+	}
+
+	@Override
     public int getPosition() {
         return position;
     }
@@ -193,6 +239,7 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
         setStack(ItemStack.fromTag(compoundTag.getCompound("stack")));
         front = compoundTag.getBoolean("front");
         down = compoundTag.getBoolean("down");
+        across = compoundTag.getBoolean("across");
         position = compoundTag.getInt("position");
         prevPosition = compoundTag.getInt("position");
     }
@@ -207,6 +254,7 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
         compoundTag.put("stack", getStack().toTag(new CompoundTag()));
         compoundTag.putBoolean("front", front);
         compoundTag.putBoolean("down", down);
+        compoundTag.putBoolean("across", across);
         compoundTag.putInt("position", position);
         return super.toTag(compoundTag);
     }

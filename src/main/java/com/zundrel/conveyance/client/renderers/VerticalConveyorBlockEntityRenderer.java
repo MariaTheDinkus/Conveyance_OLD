@@ -2,7 +2,7 @@ package com.zundrel.conveyance.client.renderers;
 
 import com.zundrel.conveyance.api.ConveyorType;
 import com.zundrel.conveyance.api.Conveyor;
-import com.zundrel.conveyance.api.IConveyorRenderer;
+import com.zundrel.conveyance.api.ConveyorRenderer;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
@@ -10,7 +10,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-public class VerticalConveyorBlockEntityRenderer extends BlockEntityRenderer<VerticalConveyorBlockEntity> implements IConveyorRenderer<VerticalConveyorBlockEntity> {
+public class VerticalConveyorBlockEntityRenderer extends BlockEntityRenderer<VerticalConveyorBlockEntity> implements ConveyorRenderer<VerticalConveyorBlockEntity> {
     public VerticalConveyorBlockEntityRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
         super(blockEntityRenderDispatcher);
     }

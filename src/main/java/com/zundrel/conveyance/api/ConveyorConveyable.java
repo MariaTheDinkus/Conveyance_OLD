@@ -1,9 +1,5 @@
 package com.zundrel.conveyance.api;
 
-public interface ConveyorConveyable extends Conveyable {
+public interface ConveyorConveyable extends PositionalConveyable {
 	ConveyorType getConveyorType();
-
-	int getPosition();
-
-	int getPrevPosition();
 }

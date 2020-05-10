@@ -3,6 +3,7 @@ package com.zundrel.conveyance.client;
 import com.zundrel.conveyance.Conveyance;
 import com.zundrel.conveyance.client.renderers.ConveyorBlockEntityRenderer;
 import com.zundrel.conveyance.client.renderers.DownVerticalConveyorBlockEntityRenderer;
+import com.zundrel.conveyance.client.renderers.DoubleMachineEntityRenderer;
 import com.zundrel.conveyance.client.renderers.VerticalConveyorBlockEntityRenderer;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import com.zundrel.conveyance.common.registries.ConveyanceBlocks;
@@ -21,6 +22,9 @@ public class ConveyanceClient implements ClientModInitializer {
         });
 
         ConveyanceBlocks.registerRenderLayers();
+
+		BlockEntityRendererRegistry.INSTANCE.register(ConveyanceBlockEntities.ALTERNATOR, (blockEntityRenderDispatcher -> new DoubleMachineEntityRenderer(BlockEntityRenderDispatcher.INSTANCE)));
+		BlockEntityRendererRegistry.INSTANCE.register(ConveyanceBlockEntities.SPLITTER, (blockEntityRenderDispatcher -> new DoubleMachineEntityRenderer(BlockEntityRenderDispatcher.INSTANCE)));
 
         BlockEntityRendererRegistry.INSTANCE.register(ConveyanceBlockEntities.CONVEYOR, (blockEntityRenderDispatcher -> new ConveyorBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE)));
         BlockEntityRendererRegistry.INSTANCE.register(ConveyanceBlockEntities.VERTICAL_CONVEYOR, (blockEntityRenderDispatcher -> new VerticalConveyorBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE)));

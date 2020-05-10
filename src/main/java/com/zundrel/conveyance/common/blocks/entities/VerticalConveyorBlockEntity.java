@@ -83,8 +83,8 @@ public class VerticalConveyorBlockEntity extends ConveyorBlockEntity {
 	}
 
 	@Override
-	public Direction getOutputSide(ConveyorType type) {
-		return type == ConveyorType.NORMAL ? getCachedState().get(HorizontalFacingBlock.FACING) : Direction.UP;
+	public boolean isOutputSide(Direction direction, ConveyorType type) {
+		return type == ConveyorType.NORMAL ? getCachedState().get(HorizontalFacingBlock.FACING) == direction : direction == Direction.UP;
 	}
 
     @Override

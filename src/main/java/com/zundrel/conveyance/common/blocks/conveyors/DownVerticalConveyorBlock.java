@@ -50,7 +50,7 @@ public class DownVerticalConveyorBlock extends VerticalConveyorBlock {
             newState = newState.with(ConveyorProperties.FRONT, false);
 
 		BlockEntity conveyorBlockEntity = world.getBlockEntity(conveyorPos);
-        if (world.isAir(blockPos.up()) && conveyorBlockEntity instanceof Conveyable && !((Conveyable) conveyorBlockEntity).hasBeenRemoved() && ((Conveyable) conveyorBlockEntity).getOutputSide(getType()) == direction.getOpposite())
+        if (world.isAir(blockPos.up()) && conveyorBlockEntity instanceof Conveyable && !((Conveyable) conveyorBlockEntity).hasBeenRemoved() && ((Conveyable) conveyorBlockEntity).isOutputSide(direction.getOpposite(), getType()))
             newState = newState.with(ConveyorProperties.CONVEYOR, true);
         else
             newState = newState.with(ConveyorProperties.CONVEYOR, false);
@@ -80,7 +80,7 @@ public class DownVerticalConveyorBlock extends VerticalConveyorBlock {
 	public void checkForConveyor(World world, BlockState blockState, BlockEntity conveyorBlockEntity, Direction direction, BlockPos pos, BlockPos upPos) {
 		BlockState newState = blockState;
 
-		if (world.isAir(upPos) && conveyorBlockEntity instanceof Conveyable && !((Conveyable) conveyorBlockEntity).hasBeenRemoved() && ((Conveyable) conveyorBlockEntity).getOutputSide(getType()) == direction.getOpposite())
+		if (world.isAir(upPos) && conveyorBlockEntity instanceof Conveyable && !((Conveyable) conveyorBlockEntity).hasBeenRemoved() && ((Conveyable) conveyorBlockEntity).isOutputSide(direction.getOpposite(), getType()))
 			newState = newState.with(ConveyorProperties.CONVEYOR, true);
 		else
 			newState = newState.with(ConveyorProperties.CONVEYOR, false);

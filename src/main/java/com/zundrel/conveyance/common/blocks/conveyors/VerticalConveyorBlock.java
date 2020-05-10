@@ -101,7 +101,7 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
         BlockPos conveyorPos = blockPos.offset(direction).up();
 
         BlockEntity frontBlockEntity = world.getBlockEntity(frontPos);
-        if (frontBlockEntity instanceof Conveyable && ((Conveyable) frontBlockEntity).getOutputSide(getType()) == direction) {
+        if (frontBlockEntity instanceof Conveyable && ((Conveyable) frontBlockEntity).isOutputSide(direction, getType())) {
             newState = newState.with(ConveyorProperties.FRONT, true);
         } else
             newState = newState.with(ConveyorProperties.FRONT, false);

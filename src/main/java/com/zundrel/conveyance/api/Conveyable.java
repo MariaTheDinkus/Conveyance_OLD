@@ -11,7 +11,7 @@ public interface Conveyable {
 
     boolean validInputSide(Direction direction);
 
-    Direction getOutputSide(ConveyorType type);
+	boolean isOutputSide(Direction direction, ConveyorType type);
 
     /**
      * @return Gives the interactable the stack.
