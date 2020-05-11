@@ -11,6 +11,7 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
@@ -46,6 +47,8 @@ public class AlternatorBlock extends HorizontalFacingBlock implements BlockEntit
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof DoubleMachineBlockEntity) {
+				ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ((DoubleMachineBlockEntity) blockEntity).getLeftStack());
+				ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ((DoubleMachineBlockEntity) blockEntity).getRightStack());
 				((DoubleMachineBlockEntity) blockEntity).setRemoved(true);
 			}
 

@@ -1,25 +1,22 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "iPi",
-        "R_R",
-        "iHi"
+        " P ",
+        "RiR",
+        "ibi"
     ],
     "key": {
         "i": {
             "item": "minecraft:iron_ingot"
         },
+		"b": {
+			"item": "minecraft:black_dye"
+		},
         "P": {
-            "item": "minecraft:piston"
-        },
-		"H": {
             "item": "minecraft:sticky_piston"
         },
         "R": {
             "item": "minecraft:redstone"
-        },
-        "_": {
-            "item": "conveyance:conveyor"
         }
     },
     "result": {

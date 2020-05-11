@@ -21,6 +21,8 @@ import net.minecraft.util.registry.Registry;
 public class ConveyanceBlocks {
 	public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.STONE)));
 	public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.STONE)));
+	public static InserterBlock INSERTER = register("inserter", new InserterBlock("normal", 16, FabricBlockSettings.copy(Blocks.STONE).nonOpaque()));
+	public static InserterBlock INSERTER_FAST = register("inserter_fast", new InserterBlock("fast", 8, FabricBlockSettings.copy(Blocks.STONE).nonOpaque()));
 
     public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
     public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));

@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public class ConveyanceBlockEntities {
 	public static BlockEntityType ALTERNATOR = register("alternator", AlternatorBlockEntity::new, ConveyanceBlocks.ALTERNATOR);
 	public static BlockEntityType SPLITTER = register("splitter", SplitterBlockEntity::new, ConveyanceBlocks.SPLITTER);
+	public static BlockEntityType INSERTER = register("inserter", InserterBlockEntity::new, ConveyanceBlocks.INSERTER, ConveyanceBlocks.INSERTER_FAST);
 
     public static BlockEntityType CONVEYOR = register("conveyor", ConveyorBlockEntity::new, ConveyanceBlocks.CONVEYOR, ConveyanceBlocks.FAST_CONVEYOR, ConveyanceBlocks.EXPRESS_CONVEYOR);
     public static BlockEntityType VERTICAL_CONVEYOR = register("vertical_conveyor", VerticalConveyorBlockEntity::new, ConveyanceBlocks.VERTICAL_CONVEYOR, ConveyanceBlocks.VERTICAL_FAST_CONVEYOR, ConveyanceBlocks.VERTICAL_EXPRESS_CONVEYOR);

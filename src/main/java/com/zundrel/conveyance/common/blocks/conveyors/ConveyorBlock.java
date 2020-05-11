@@ -108,13 +108,6 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 	}
 
 	@Override
-	public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
-
-
-		super.afterBreak(world, player, pos, state, blockEntity, stack);
-	}
-
-	@Override
     public BlockState getStateForNeighborUpdate(BlockState blockState, Direction fromDirection, BlockState fromState, IWorld world, BlockPos blockPos, BlockPos fromPos) {
         BlockState newState = blockState;
         Direction direction = newState.get(FACING);

@@ -190,6 +190,18 @@ public interface ConveyorRenderer<T extends BlockEntity> {
         }
     }
 
+	default void renderItem(T blockEntity, ItemStack stack, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
+    	if (!stack.isEmpty()) {
+			int light = LightmapTextureManager.pack(blockEntity.getWorld().getLightLevel(LightType.BLOCK, blockEntity.getPos()), blockEntity.getWorld().getLightLevel(LightType.SKY, blockEntity.getPos()));
+
+			matrixStack.push();
+			if (!(stack.getItem() instanceof BlockItem))
+				matrixStack.scale(0.8F, 0.8F, 0.8F);
+			MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
+			matrixStack.pop();
+		}
+	}
+
     default void renderItem(T blockEntity, Direction direction, ItemStack stack, float position, int speed, float horizontalPosition, ConveyorType type, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
         Random random = new Random();
         int rotation = type == ConveyorType.DOWN_VERTICAL ? -90 : 90;
