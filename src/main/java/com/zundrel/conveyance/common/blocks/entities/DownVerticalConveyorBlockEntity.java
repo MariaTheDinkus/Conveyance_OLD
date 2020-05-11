@@ -65,7 +65,7 @@ public class DownVerticalConveyorBlockEntity extends ConveyorBlockEntity {
 		if (conveyable.accepts(getStack())) {
 			if (horizontalPosition < speed) {
 				setHorizontalPosition(getHorizontalPosition() + 1);
-			} else if (transition && horizontalPosition >= speed) {
+			} else if (transition && !getWorld().isClient() && horizontalPosition >= speed) {
 				conveyable.give(getStack());
 				removeStack();
 			}

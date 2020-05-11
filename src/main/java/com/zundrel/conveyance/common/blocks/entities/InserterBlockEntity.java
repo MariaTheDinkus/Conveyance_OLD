@@ -40,7 +40,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
 		Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
 		int speed = ((InserterBlock) getCachedState().getBlock()).getSpeed();
 
-		if (isEmpty() && hasInput && getWorld().getBlockEntity(getPos().offset(direction.getOpposite())) instanceof Inventory) {
+		if (isEmpty() && hasInput && !getWorld().isClient() && getWorld().getBlockEntity(getPos().offset(direction.getOpposite())) instanceof Inventory) {
 			Inventory inventory = (Inventory) getWorld().getBlockEntity(getPos().offset(direction.getOpposite()));
 			if (position == 0) {
 				int slotToUse = -1;
@@ -61,7 +61,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
 
 			if (position < speed) {
 				setPosition(getPosition() + 1);
-			} else {
+			} else if (!getWorld().isClient()) {
 				ItemStack itemStack2 = transfer(this, inventory, this.removeStack(0, getStack().getCount()), direction.getOpposite());
 				if (itemStack2.isEmpty()) {
 					inventory.markDirty();

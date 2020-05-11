@@ -70,7 +70,7 @@ public class DoubleMachineBlockEntity extends BlockEntity implements Conveyable,
 		if (conveyable.accepts(getLeftStack())) {
 			if (leftPosition < speed) {
 				setLeftPosition(getLeftPosition() + 1);
-			} else if (transition && leftPosition >= speed) {
+			} else if (transition && !getWorld().isClient() && leftPosition >= speed) {
 				conveyable.give(getLeftStack());
 				removeLeftStack();
 			}
@@ -89,7 +89,7 @@ public class DoubleMachineBlockEntity extends BlockEntity implements Conveyable,
 		if (conveyable.accepts(getRightStack())) {
 			if (rightPosition < speed) {
 				setRightPosition(getRightPosition() + 1);
-			} else if (transition && rightPosition >= speed) {
+			} else if (transition && !getWorld().isClient() && rightPosition >= speed) {
 				conveyable.give(getRightStack());
 				removeRightStack();
 			}

@@ -75,7 +75,7 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
 		if (conveyable.accepts(getStack())) {
 			if (position < speed) {
 				setPosition(getPosition() + 1);
-			} else if (transition && position >= speed) {
+			} else if (transition && !getWorld().isClient() && position >= speed) {
 				conveyable.give(getStack());
 				removeStack();
 			}
@@ -103,7 +103,7 @@ public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyab
 						prevPosition = position;
 					}
 				}
-			} else if (transition && position >= speed) {
+			} else if (transition && !getWorld().isClient() && position >= speed) {
 				conveyable.give(getStack());
 				removeStack();
 			}
