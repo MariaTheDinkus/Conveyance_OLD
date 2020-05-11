@@ -3,7 +3,7 @@
 	"textures": {
 		"0": "conveyance:block/conveyor_side",
 		"1": "conveyance:block/metal_side",
-		"2": "conveyance:block/inserter_normal",
+		"2": "conveyance:block/inserter_fast",
 		"particle": "conveyance:block/metal_side"
 	},
 	"elements": [

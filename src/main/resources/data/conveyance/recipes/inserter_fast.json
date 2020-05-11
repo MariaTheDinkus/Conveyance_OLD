@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " P ",
+        "R_R",
+        " H "
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:diamond"
+        },
+		"H": {
+            "item": "minecraft:lapis_lazuli"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "_": {
+            "item": "conveyance:inserter"
+        }
+    },
+    "result": {
+        "item": "conveyance:inserter_fast",
+        "count": 1
+    }
+}

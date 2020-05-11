@@ -1,7 +1,9 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
-import com.zundrel.conveyance.api.IConveyor;
-import com.zundrel.conveyance.api.IConveyorMachine;
+import com.zundrel.conveyance.api.Conveyable;
+import com.zundrel.conveyance.api.Conveyor;
+import com.zundrel.conveyance.api.ConveyorConveyable;
+import com.zundrel.conveyance.api.ConveyorType;
 import com.zundrel.conveyance.common.inventory.SingularStackInventory;
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -18,13 +20,14 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class ConveyorBlockEntity extends BlockEntity implements SingularStackInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
+public class ConveyorBlockEntity extends BlockEntity implements ConveyorConveyable, SingularStackInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
     private DefaultedList<ItemStack> stacks = DefaultedList.ofSize(1, ItemStack.EMPTY);
     protected boolean front = false;
     protected boolean down = false;
     protected boolean across = false;
     protected int position = 0;
     protected int prevPosition = 0;
+    protected boolean hasBeenRemoved = false;
 
     public ConveyorBlockEntity() {
         super(ConveyanceBlockEntities.CONVEYOR);
@@ -36,109 +39,122 @@ public class ConveyorBlockEntity extends BlockEntity implements SingularStackInv
 
     @Override
     public void tick() {
-        Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
-        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
+		Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
+        int speed = ((Conveyor) getCachedState().getBlock()).getSpeed();
 
-        if (!isEmpty() && front && across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity && getWorld().getBlockEntity(getPos().offset(direction).offset(direction)) instanceof ConveyorBlockEntity) {
-            advancePositionAcross(getPos().offset(direction));
-        } else if (!isEmpty() && front && getWorld().getBlockState(getPos().offset(direction)).getBlock() instanceof IConveyorMachine) {
-            BlockPos posFacing = getPos().offset(direction);
-            IConveyorMachine conveyorMachine = (IConveyorMachine) getWorld().getBlockState(posFacing).getBlock();
-
-            boolean canInsert = conveyorMachine.canInsert(getWorld(), posFacing, getWorld().getBlockState(posFacing), this, getStack(), direction.getOpposite());
-
-            if (!getWorld().isClient() && this.position >= speed && canInsert) {
-                conveyorMachine.insert(getWorld(), posFacing, getWorld().getBlockState(posFacing), this, getStack(), direction.getOpposite());
-                removeStack();
-            }
-
-            if (canInsert) {
-                if (this.position < speed) {
-                    setPosition(this.position + 1);
-                }
-            } else {
-                if (this.position > 0) {
-                    setPosition(Math.max(0, this.position - 4));
-                    prevPosition = this.position;
-                }
-            }
-        } else if (!isEmpty() && front && !across && getWorld().getBlockEntity(getPos().offset(direction)) instanceof ConveyorBlockEntity) {
-            advancePosition(getPos().offset(direction));
-        } else if (!isEmpty() && down && getWorld().getBlockEntity(getPos().offset(direction).down(1)) instanceof DownVerticalConveyorBlockEntity) {
-            advancePositionDown(getPos().offset(direction).down(1));
-        } else if (!isEmpty() && position > 0) {
-            setPosition(Math.max(0, position - 4));
-        } else if (isEmpty() && position > 0) {
-            setPosition(0);
-        }
+		if (!isEmpty()) {
+			if (across) {
+				BlockPos frontPos = getPos().offset(direction);
+				BlockPos frontAcrossPos = frontPos.offset(direction);
+				if (getWorld().getBlockEntity(frontPos) instanceof ConveyorConveyable && getWorld().getBlockEntity(frontAcrossPos) instanceof ConveyorConveyable) {
+					Conveyable conveyable = (Conveyable) getWorld().getBlockEntity(frontPos);
+					Conveyable acrossConveyable = (Conveyable) getWorld().getBlockEntity(frontAcrossPos);
+					handleMovementAcross(conveyable, acrossConveyable, speed, true);
+				}
+			} else if (front) {
+				BlockPos frontPos = getPos().offset(direction);
+				if (getWorld().getBlockEntity(frontPos) instanceof Conveyable) {
+					Conveyable conveyable = (Conveyable) getWorld().getBlockEntity(frontPos);
+					handleMovement(conveyable, speed, true);
+				}
+			} else if (down) {
+				BlockPos downPos = getPos().offset(direction).down();
+				if (getWorld().getBlockEntity(downPos) instanceof Conveyable) {
+					Conveyable conveyable = (Conveyable) getWorld().getBlockEntity(downPos);
+					handleMovement(conveyable, speed, true);
+				}
+			} else {
+				setPosition(0);
+			}
+		} else {
+			setPosition(0);
+		}
     }
 
-    public void advancePosition(BlockPos pos) {
-        ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
-        boolean empty = conveyorBlockEntity.isEmpty();
-        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
+    public void handleMovement(Conveyable conveyable, int speed, boolean transition) {
+		if (conveyable.accepts(getStack())) {
+			if (position < speed) {
+				setPosition(getPosition() + 1);
+			} else if (transition && position >= speed) {
+				conveyable.give(getStack());
+				removeStack();
+			}
+		} else if (conveyable instanceof ConveyorConveyable) {
+			ConveyorConveyable conveyor = (ConveyorConveyable) conveyable;
 
-        if (!getWorld().isClient() && this.position >= speed && conveyorBlockEntity.isEmpty()) {
-            conveyorBlockEntity.setStack(getStack());
-            removeStack();
-        }
+			if (position < speed && position + 4 < conveyor.getPosition() && conveyor.getPosition() > 4) {
+				setPosition(getPosition() + 1);
+			} else {
+				prevPosition = position;
+			}
+		}
+	}
 
-        if (empty && this.position < speed || !empty && this.position < speed && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
-            setPosition(this.position + 1);
-        } else {
-            prevPosition = this.position;
-        }
+	public void handleMovementAcross(Conveyable conveyable, Conveyable acrossConveyable, int speed, boolean transition) {
+		if (conveyable.accepts(getStack())) {
+			if (position < speed) {
+				if (conveyable instanceof ConveyorConveyable && acrossConveyable instanceof ConveyorConveyable) {
+					ConveyorConveyable conveyor = (ConveyorConveyable) conveyable;
+					ConveyorConveyable acrossConveyor = (ConveyorConveyable) acrossConveyable;
 
-        if (this.position > 0 && !conveyorBlockEntity.isEmpty() && conveyorBlockEntity.getPosition() == 0) {
-            setPosition(Math.max(0, this.position - 4));
-        }
-    }
+					if (position < speed && acrossConveyor.getPosition() == 0) {
+						setPosition(getPosition() + 1);
+					} else {
+						prevPosition = position;
+					}
+				}
+			} else if (transition && position >= speed) {
+				conveyable.give(getStack());
+				removeStack();
+			}
+		} else if (conveyable instanceof ConveyorConveyable && acrossConveyable instanceof ConveyorConveyable) {
+			ConveyorConveyable conveyor = (ConveyorConveyable) conveyable;
+			ConveyorConveyable acrossConveyor = (ConveyorConveyable) acrossConveyable;
 
-    public void advancePositionDown(BlockPos pos) {
-        ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
-        boolean empty = conveyorBlockEntity.isEmpty();
-        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
+			if (position < speed && acrossConveyor.getPosition() == 0 && position + 4 < conveyor.getPosition() && conveyor.getPosition() > 4) {
+				setPosition(getPosition() + 1);
+			} else {
+				prevPosition = position;
+			}
+		}
+	}
 
-        if (!getWorld().isClient() && this.position >= speed && conveyorBlockEntity.isEmpty()) {
-            conveyorBlockEntity.setStack(getStack());
-            removeStack();
-        }
+	@Override
+	public boolean hasBeenRemoved() {
+		return hasBeenRemoved;
+	}
 
-        if (empty && this.position < speed) {
-            setPosition(this.position + 1);
-        } else {
-            prevPosition = this.position;
-        }
+	@Override
+	public void setRemoved(boolean hasBeenRemoved) {
+		this.hasBeenRemoved = hasBeenRemoved;
+	}
 
-        if (this.position > 0 && !conveyorBlockEntity.isEmpty() && conveyorBlockEntity.getPosition() == 0) {
-            setPosition(Math.max(0, this.position - 4));
-        }
-    }
+	@Override
+	public ConveyorType getConveyorType() {
+		return ((Conveyor) getCachedState().getBlock()).getType();
+	}
 
-    public void advancePositionAcross(BlockPos pos) {
-        Direction direction = getCachedState().get(HorizontalFacingBlock.FACING);
-        ConveyorBlockEntity conveyorBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos);
-        ConveyorBlockEntity acrossBlockEntity = (ConveyorBlockEntity) getWorld().getBlockEntity(pos.offset(direction));
-        int speed = ((IConveyor) getCachedState().getBlock()).getSpeed();
-        boolean empty = conveyorBlockEntity.isEmpty();
+	@Override
+	public boolean accepts(ItemStack stack) {
+		return isEmpty();
+	}
 
-        if (!getWorld().isClient() && this.position >= 16 && conveyorBlockEntity.isEmpty()) {
-            conveyorBlockEntity.setStack(getStack());
-            removeStack();
-        }
+	@Override
+	public boolean validInputSide(Direction direction) {
+		return direction != getCachedState().get(HorizontalFacingBlock.FACING) && direction != Direction.UP && direction != Direction.DOWN;
+	}
 
-        if (empty && acrossBlockEntity.getPosition() == 0 && this.position < speed || !empty && acrossBlockEntity.getPosition() == 0 && this.position < speed && this.position + 4 < conveyorBlockEntity.getPosition() && conveyorBlockEntity.getPosition() > 4) {
-            setPosition(this.position + 1);
-        } else {
-            prevPosition = this.position;
-        }
+	@Override
+	public boolean isOutputSide(Direction direction, ConveyorType type) {
+		return getCachedState().get(HorizontalFacingBlock.FACING) == direction;
+	}
 
-        if (this.position > 0 && !conveyorBlockEntity.isEmpty() && conveyorBlockEntity.getPosition() == 0) {
-            setPosition(Math.max(0, this.position - 4));
-        }
-    }
+	@Override
+	public void give(ItemStack stack) {
+		setStack(stack);
+	}
 
-    @Override
+	@Override
     public DefaultedList<ItemStack> getItems() {
         return stacks;
     }
@@ -178,19 +194,20 @@ public class ConveyorBlockEntity extends BlockEntity implements SingularStackInv
         markDirty();
     }
 
-    public boolean hasAcross() {
-        return across;
-    }
+	public boolean hasAcross() {
+		return across;
+	}
 
-    public void setAcross(boolean across) {
-        this.across = across;
-        markDirty();
-    }
+	public void setAcross(boolean across) {
+		this.across = across;
+	}
 
+	@Override
     public int getPosition() {
         return position;
     }
 
+    @Override
     public int getPrevPosition() {
         return prevPosition;
     }

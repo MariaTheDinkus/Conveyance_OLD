@@ -4,6 +4,7 @@
 	"block.conveyance.alternator": "Alternator",
 	"block.conveyance.splitter": "Splitter",
 	"block.conveyance.inserter": "Inserter",
+	"block.conveyance.inserter_fast": "Fast Inserter",
 	"block.conveyance.conveyor": "Conveyor",
 	"block.conveyance.conveyor_vertical": "Vertical Conveyor",
 	"block.conveyance.conveyor_vertical_down": "Vertical Conveyor (Down)",
