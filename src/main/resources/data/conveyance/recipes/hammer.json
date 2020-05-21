@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " ib",
+    " si",
+	"s  "
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+	"b": {
+	  "item": "minecraft:blue_dye"
+	},
+	"s": {
+	  "item": "minecraft:stick"
+	}
+  },
+  "result": {
+    "item": "conveyance:hammer",
+    "count": 1
+  }
+}

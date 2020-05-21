@@ -21,6 +21,7 @@ import net.minecraft.util.registry.Registry;
 public class ConveyanceBlocks {
 	public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.STONE)));
 	public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.STONE)));
+	public static IncineratorBlock INCINERATOR = register("incinerator", new IncineratorBlock(FabricBlockSettings.copy(Blocks.STONE).ticksRandomly()));
 	public static InserterBlock INSERTER = register("inserter", new InserterBlock("normal", 16, FabricBlockSettings.copy(Blocks.STONE).nonOpaque()));
 	public static InserterBlock INSERTER_FAST = register("inserter_fast", new InserterBlock("fast", 8, FabricBlockSettings.copy(Blocks.STONE).nonOpaque()));
 
@@ -43,7 +44,7 @@ public class ConveyanceBlocks {
     
     @Environment(EnvType.CLIENT)
     public static void registerRenderLayers() {
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ALTERNATOR, SPLITTER, CONVEYOR, VERTICAL_CONVEYOR, DOWN_VERTICAL_CONVEYOR,
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ALTERNATOR, SPLITTER, INCINERATOR, CONVEYOR, VERTICAL_CONVEYOR, DOWN_VERTICAL_CONVEYOR,
                 FAST_CONVEYOR, VERTICAL_FAST_CONVEYOR, DOWN_VERTICAL_FAST_CONVEYOR,
                 EXPRESS_CONVEYOR, VERTICAL_EXPRESS_CONVEYOR, DOWN_VERTICAL_EXPRESS_CONVEYOR);
 

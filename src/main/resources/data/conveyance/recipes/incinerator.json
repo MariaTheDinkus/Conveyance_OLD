@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "isi",
+        "bLb",
+        "isi"
+    ],
+    "key": {
+        "i": {
+            "item": "c:iron_plate"
+        },
+		"b": {
+			"item": "minecraft:iron_bars"
+		},
+		"s": {
+			"item": "minecraft:stone"
+		},
+		"L": {
+			"item": "minecraft:lava_bucket"
+		}
+    },
+    "result": {
+        "item": "conveyance:alternator",
+        "count": 1
+    }
+}

@@ -1,8 +1,6 @@
 package com.zundrel.conveyance;
 
-import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
-import com.zundrel.conveyance.common.registries.ConveyanceBlocks;
-import com.zundrel.conveyance.common.registries.ConveyanceItems;
+import com.zundrel.conveyance.common.registries.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.Item;
@@ -32,14 +30,18 @@ public class Conveyance implements ModInitializer {
         addBlacklistedBlock(Items.DRAGON_HEAD, 0.625F, true);
         addBlacklistedBlock(Items.PLAYER_HEAD, true);
         addBlacklistedBlock(Items.ZOMBIE_HEAD, true);
+		addBlacklistedBlock(Items.SKELETON_SKULL, true);
+		addBlacklistedBlock(Items.WITHER_SKELETON_SKULL, true);
         addBlacklistedBlock(Items.REDSTONE, 0.8F, false);
     }
 
 	@Override
 	public void onInitialize() {
+		ConveyanceArtisTables.init();
         ConveyanceItems.init();
         ConveyanceBlocks.init();
         ConveyanceBlockEntities.init();
+		ConveyanceSounds.init();
 	}
 
     public static void addBlacklistedBlock(Item item, boolean lifted) {

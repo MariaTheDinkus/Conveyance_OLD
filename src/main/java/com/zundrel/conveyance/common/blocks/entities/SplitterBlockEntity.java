@@ -1,8 +1,10 @@
 package com.zundrel.conveyance.common.blocks.entities;
 
 import com.zundrel.conveyance.common.registries.ConveyanceBlockEntities;
+import com.zundrel.conveyance.common.registries.ConveyanceSounds;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundCategory;
 
 public class SplitterBlockEntity extends DoubleMachineBlockEntity {
 	public SplitterBlockEntity() {
@@ -30,5 +32,7 @@ public class SplitterBlockEntity extends DoubleMachineBlockEntity {
 
 		if (largeStack.getCount() > 0)
 			setRightStack(largeStack);
+
+		world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), ConveyanceSounds.MACHINE_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
 	}
 }

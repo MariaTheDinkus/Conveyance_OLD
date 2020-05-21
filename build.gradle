@@ -56,7 +56,14 @@ dependencies {
 	modImplementation ("com.github.Zundrel:Wrenchable:${project.wrenchable_version}") { exclude(module: "modmenu") }
     include "com.github.Zundrel:Wrenchable:${project.wrenchable_version}"
 	
-	modImplementation ("me.shedaniel:RoughlyEnoughItems:${project.rei_version}") { exclude(module: "modmenu") }
+	modImplementation "io.github.alloffabric:Artis:1.3.0+20w19a"
+	
+	modImplementation "com.github.CottonMC:CottonResources:6816a33"
+	
+	modApi 'teamreborn:energy:0.1.0'
+	include 'teamreborn:energy:0.1.0'
+	
+	// modImplementation ("me.shedaniel:RoughlyEnoughItems:${project.rei_version}") { exclude(module: "modmenu") }
 }
 
 processResources {

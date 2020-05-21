@@ -17,5 +17,8 @@
 	"block.conveyance.catwalk": "Catwalk",
 	"block.conveyance.catwalk_stairs": "Catwalk Stairs",
 	
-	"item.conveyance.wrench": "Wrench"
+	"item.conveyance.wrench": "Wrench",
+	"item.conveyance.hammer": "Hammer",
+	
+	"rei.category.metalworking_table": "Metalworking"
 }

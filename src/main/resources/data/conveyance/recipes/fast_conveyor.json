@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "###",
-        "RgR"
+        "gRg"
     ],
     "key": {
         "#": {
@@ -12,7 +12,7 @@
             "item": "minecraft:redstone_block"
         },
         "g": {
-            "item": "minecraft:gold_ingot"
+            "item": "c:gold_plate"
         }
     },
     "result": {

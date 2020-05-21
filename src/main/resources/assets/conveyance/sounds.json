@@ -1,0 +1,11 @@
+{
+	"block.machine.click": {
+		"sounds": [
+			"conveyance:machine_click_1",
+			"conveyance:machine_click_2",
+			"conveyance:machine_click_3",
+			"conveyance:machine_click_4"
+		],
+		"subtitle": "subtitle.conveyance.machine.click"
+	}
+}

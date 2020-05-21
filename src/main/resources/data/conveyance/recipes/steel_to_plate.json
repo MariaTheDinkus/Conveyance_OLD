@@ -1,0 +1,19 @@
+{
+    "type": "conveyance:metalworking_table_shaped",
+    "pattern": [
+        "ii"
+    ],
+    "key": {
+        "i": {
+            "item": "c:steel_ingot"
+        }
+    },
+    "result": {
+        "item": "c:steel_plate",
+        "count": 1
+    },
+	"catalyst": {
+		"item": "conveyance:hammer"
+	},
+	"cost": 1
+}
