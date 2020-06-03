@@ -7,9 +7,13 @@ import com.zundrel.conveyance.api.ConveyorType;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.items.WrenchItem;
 import com.zundrel.conveyance.common.utilities.MovementUtilities;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -66,7 +70,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
     	BlockPos pos = new BlockPos(entity.getPos());
 
-    	if (!entity.isOnGround() || (entity.getY() - blockPos.getY()) != (4F / 16F))
+    	if (!entity.onGround || (entity.getY() - blockPos.getY()) != (4F / 16F))
             return;
 
         if (entity instanceof PlayerEntity && entity.isSneaking())
@@ -98,7 +102,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
 			if (blockEntity_1 instanceof ConveyorBlockEntity) {
 				((ConveyorBlockEntity) blockEntity_1).setRemoved(true);
 				ItemScatterer.spawn(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), ((ConveyorBlockEntity) blockEntity_1).getStack());
-				world.updateComparators(blockPos, this);
+				world.updateHorizontalAdjacent(blockPos, this);
 			}
 
 			super.onBlockRemoved(blockState, world, blockPos, blockState2, boolean_1);
@@ -211,7 +215,7 @@ public class ConveyorBlock extends HorizontalFacingBlock implements BlockEntityP
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext entityContext) {
+    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, EntityContext entityContext) {
         VoxelShape conveyor = VoxelShapes.cuboid(0, 0, 0, 1, (4F / 16F), 1);
         if (blockState.get(ConveyorProperties.UP)) {
             return VoxelShapes.fullCube();

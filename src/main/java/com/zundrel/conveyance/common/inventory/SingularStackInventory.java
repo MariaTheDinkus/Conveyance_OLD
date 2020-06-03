@@ -4,7 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.DefaultedList;
 
 /**
  * A simple {@code Inventory} implementation with only default methods + an item list getter.
@@ -38,7 +38,7 @@ public interface SingularStackInventory extends Inventory {
 	 * Returns the inventory size.
 	 */
 	@Override
-	default int size() {
+	default int getInvSize() {
 		return getItems().size();
 	}
 
@@ -46,8 +46,8 @@ public interface SingularStackInventory extends Inventory {
 	 * @return true if this inventory has only empty stacks, false otherwise
 	 */
 	default boolean isInvEmpty() {
-		for (int i = 0; i < size(); i++) {
-			ItemStack stack = getStack(i);
+		for (int i = 0; i < getInvSize(); i++) {
+			ItemStack stack = getInvStack(i);
 			if (!stack.isEmpty()) {
 				return false;
 			}
@@ -55,7 +55,7 @@ public interface SingularStackInventory extends Inventory {
 		return true;
 	}
 
-	@Override
+//	@Override
 	default boolean isEmpty() {
 		return isInvEmpty();
 	}
@@ -64,12 +64,12 @@ public interface SingularStackInventory extends Inventory {
 	 * Gets the item in the slot.
 	 */
 	@Override
-	default ItemStack getStack(int slot) {
+	default ItemStack getInvStack(int slot) {
 		return getItems().get(slot);
 	}
 
 	default ItemStack getStack() {
-		return getStack(0);
+		return getInvStack(0);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public interface SingularStackInventory extends Inventory {
 	 * takes all items in that slot.
 	 */
 	@Override
-	default ItemStack removeStack(int slot, int count) {
+	default ItemStack takeInvStack(int slot, int count) {
 		ItemStack result = Inventories.splitStack(getItems(), slot, count);
 		if (!result.isEmpty()) {
 			markDirty();
@@ -90,32 +90,32 @@ public interface SingularStackInventory extends Inventory {
 	 * Removes the current stack in the {@code slot} and returns it.
 	 */
 	@Override
-	default ItemStack removeStack(int slot) {
+	default ItemStack removeInvStack(int slot) {
 		ItemStack stack = Inventories.removeStack(getItems(), slot);
 		markDirty();
 		return stack;
 	}
 
 	default ItemStack removeStack() {
-		return removeStack(0);
+		return removeInvStack(0);
 	}
 
 	/**
 	 * Replaces the current stack in the {@code slot} with the provided stack.
-	 * <p>If the stack is too big for this inventory ({@link Inventory#getMaxCountPerStack()}),
+	 * <p>If the stack is too big for this inventory ({@link Inventory#getInvMaxStackAmount()}),
 	 * it gets resized to this inventory's maximum amount.
 	 */
 	@Override
-	default void setStack(int slot, ItemStack stack) {
+	default void setInvStack(int slot, ItemStack stack) {
 		getItems().set(slot, stack);
-		if (stack.getCount() > getMaxCountPerStack()) {
-			stack.setCount(getMaxCountPerStack());
+		if (stack.getCount() > getInvMaxStackAmount()) {
+			stack.setCount(getInvMaxStackAmount());
 		}
 		markDirty();
 	}
 
 	default void setStack(ItemStack stack) {
-		setStack(0, stack);
+		setInvStack(0, stack);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public interface SingularStackInventory extends Inventory {
 	}
 
 	@Override
-	default boolean canPlayerUse(PlayerEntity player) {
+	default boolean canPlayerUseInv(PlayerEntity player) {
 		return true;
 	}
 }

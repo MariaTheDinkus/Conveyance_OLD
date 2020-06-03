@@ -6,15 +6,14 @@ import com.zundrel.conveyance.api.ConveyorType;
 import com.zundrel.conveyance.common.inventory.DoubleStackInventory;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -163,7 +162,7 @@ public class DoubleMachineBlockEntity extends BlockEntity implements Conveyable,
 
 	@Override
 	public boolean accepts(ItemStack stack) {
-		return isEmpty();
+		return empty();
 	}
 
 	@Override
@@ -199,8 +198,8 @@ public class DoubleMachineBlockEntity extends BlockEntity implements Conveyable,
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag compoundTag) {
-		super.fromTag(state, compoundTag);
+	public void fromTag(CompoundTag compoundTag) {
+		super.fromTag(compoundTag);
 		clear();
 		setLeftStack(ItemStack.fromTag(compoundTag.getCompound("leftStack")));
 		setRightStack(ItemStack.fromTag(compoundTag.getCompound("rightStack")));
@@ -214,7 +213,7 @@ public class DoubleMachineBlockEntity extends BlockEntity implements Conveyable,
 
 	@Override
 	public void fromClientTag(CompoundTag compoundTag) {
-		fromTag(getCachedState(), compoundTag);
+		fromTag(compoundTag);
 	}
 
 	@Override

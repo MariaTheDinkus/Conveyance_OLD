@@ -2,11 +2,17 @@ package com.zundrel.conveyance.common.blocks.conveyors;
 
 import com.zundrel.conveyance.api.ConveyableBlock;
 import com.zundrel.conveyance.common.blocks.entities.InserterBlockEntity;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.EntityContext;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -14,6 +20,8 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class InserterBlock extends HorizontalFacingBlock implements BlockEntityProvider, ConveyableBlock {
 	private String type;
@@ -41,13 +49,34 @@ public class InserterBlock extends HorizontalFacingBlock implements BlockEntityP
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> stateManagerBuilder) {
-        stateManagerBuilder.add(FACING);
+        stateManagerBuilder.add(FACING, Properties.POWERED);
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return this.getDefaultState().with(FACING, itemPlacementContext.getPlayer().isSneaking() ? itemPlacementContext.getPlayerFacing().getOpposite() : itemPlacementContext.getPlayerFacing());
+        return this.getDefaultState().with(Properties.POWERED, false).with(FACING, itemPlacementContext.getPlayer().isSneaking() ? itemPlacementContext.getPlayerFacing().getOpposite() : itemPlacementContext.getPlayerFacing());
     }
+
+    @Override
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean moved) {
+		if (!world.isClient) {
+			boolean bl = state.get(Properties.POWERED);
+			if (bl != world.isReceivingRedstonePower(pos)) {
+				if (bl) {
+					world.getBlockTickScheduler().schedule(pos, this, 4);
+				} else {
+					world.setBlockState(pos, state.cycle(Properties.POWERED), 2);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if (state.get(Properties.POWERED) && !world.isReceivingRedstonePower(pos)) {
+			world.setBlockState(pos, state.cycle(Properties.POWERED), 2);
+		}
+	}
 
 	@Override
 	public void onBlockAdded(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean boolean_1) {
@@ -69,28 +98,7 @@ public class InserterBlock extends HorizontalFacingBlock implements BlockEntityP
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, EntityContext context) {
 		return VoxelShapes.cuboid(0, 0, 0, 1, 0.5, 1);
-	}
-
-	@Override
-	public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos blockPos2, boolean boolean_1) {
-		Direction direction = blockState.get(FACING);
-		InserterBlockEntity machineBlockEntity = (InserterBlockEntity) world.getBlockEntity(blockPos);
-
-		BlockPos frontPos = blockPos.offset(direction);
-		BlockPos behindPos = blockPos.offset(direction.getOpposite());
-
-		BlockEntity frontBlockEntity = world.getBlockEntity(frontPos);
-		if (frontBlockEntity instanceof Inventory && !(frontBlockEntity instanceof InserterBlockEntity))
-			machineBlockEntity.setHasOutput(true);
-		else
-			machineBlockEntity.setHasOutput(false);
-
-		BlockEntity behindBlockEntity = world.getBlockEntity(behindPos);
-		if (behindBlockEntity instanceof Inventory && !(frontBlockEntity instanceof InserterBlockEntity))
-			machineBlockEntity.setHasInput(true);
-		else
-			machineBlockEntity.setHasInput(false);
 	}
 }

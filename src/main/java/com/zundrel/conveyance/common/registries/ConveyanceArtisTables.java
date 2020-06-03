@@ -4,7 +4,7 @@ import com.zundrel.conveyance.Conveyance;
 import io.github.alloffabric.artis.Artis;
 import io.github.alloffabric.artis.api.ArtisTableType;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 
@@ -15,7 +15,7 @@ public class ConveyanceArtisTables {
         // NO-OP
     }
 
-    private static <T extends ArtisTableType> T register(T table, AbstractBlock.Settings settings) {
+    private static <T extends ArtisTableType> T register(T table, Block.Settings settings) {
 		Artis.registerTable(table, settings);
         return table;
     }

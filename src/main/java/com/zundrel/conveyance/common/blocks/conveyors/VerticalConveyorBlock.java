@@ -1,13 +1,17 @@
 package com.zundrel.conveyance.common.blocks.conveyors;
 
 import com.zundrel.conveyance.api.Conveyable;
-import com.zundrel.conveyance.api.ConveyorType;
 import com.zundrel.conveyance.api.Conveyor;
+import com.zundrel.conveyance.api.ConveyorType;
 import com.zundrel.conveyance.common.blocks.entities.ConveyorBlockEntity;
 import com.zundrel.conveyance.common.blocks.entities.VerticalConveyorBlockEntity;
 import com.zundrel.conveyance.common.utilities.RotationUtilities;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -84,7 +88,7 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
             if (blockEntity_1 instanceof VerticalConveyorBlockEntity) {
 				((VerticalConveyorBlockEntity) blockEntity_1).setRemoved(true);
                 ItemScatterer.spawn(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), ((VerticalConveyorBlockEntity) blockEntity_1).getStack());
-                world.updateComparators(blockPos, this);
+                world.updateHorizontalAdjacent(blockPos, this);
             }
 
             super.onBlockRemoved(blockState, world, blockPos, blockState2, boolean_1);
@@ -176,7 +180,7 @@ public class VerticalConveyorBlock extends HorizontalFacingBlock implements Bloc
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext entityContext) {
+    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, EntityContext entityContext) {
         VoxelShape box1 = RotationUtilities.getRotatedShape(new Box(0, 0, 0, 1, 1, (4F / 16F)), blockState.get(FACING));
         VoxelShape box2 = RotationUtilities.getRotatedShape(new Box(0, 0, 0, 1, (4F / 16F), 1), blockState.get(FACING));
 

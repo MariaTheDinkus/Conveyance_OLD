@@ -19,24 +19,24 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ConveyanceBlocks {
-	public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copy(Blocks.STONE)));
-	public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copy(Blocks.STONE)));
-	public static IncineratorBlock INCINERATOR = register("incinerator", new IncineratorBlock(FabricBlockSettings.copy(Blocks.STONE).ticksRandomly()));
-	public static InserterBlock INSERTER = register("inserter", new InserterBlock("normal", 16, FabricBlockSettings.copy(Blocks.STONE).nonOpaque()));
-	public static InserterBlock INSERTER_FAST = register("inserter_fast", new InserterBlock("fast", 8, FabricBlockSettings.copy(Blocks.STONE).nonOpaque()));
+	public static AlternatorBlock ALTERNATOR = register("alternator", new AlternatorBlock(FabricBlockSettings.copyOf(Blocks.STONE)));
+	public static SplitterBlock SPLITTER = register("splitter", new SplitterBlock(FabricBlockSettings.copyOf(Blocks.STONE)));
+	public static IncineratorBlock INCINERATOR = register("incinerator", new IncineratorBlock(FabricBlockSettings.copyOf(Blocks.STONE).ticksRandomly()));
+	public static InserterBlock INSERTER = register("inserter", new InserterBlock("normal", 16, FabricBlockSettings.copyOf(Blocks.STONE).nonOpaque()));
+	public static InserterBlock INSERTER_FAST = register("inserter_fast", new InserterBlock("fast", 8, FabricBlockSettings.copyOf(Blocks.STONE).nonOpaque()));
 
-    public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
-    public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
-    public static ConveyorBlock FAST_CONVEYOR = register("fast_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
-    public static VerticalConveyorBlock VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
-    public static ConveyorBlock EXPRESS_CONVEYOR = register("express_conveyor", new ConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
-    public static VerticalConveyorBlock VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
-    public static DownVerticalConveyorBlock DOWN_VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
+    public static ConveyorBlock CONVEYOR = register("conveyor", new ConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
+    public static VerticalConveyorBlock VERTICAL_CONVEYOR = register("conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_CONVEYOR = register("conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 16));
+    public static ConveyorBlock FAST_CONVEYOR = register("fast_conveyor", new ConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
+    public static VerticalConveyorBlock VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_FAST_CONVEYOR = register("fast_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 8));
+    public static ConveyorBlock EXPRESS_CONVEYOR = register("express_conveyor", new ConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
+    public static VerticalConveyorBlock VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical", new VerticalConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
+    public static DownVerticalConveyorBlock DOWN_VERTICAL_EXPRESS_CONVEYOR = register("express_conveyor_vertical_down", new DownVerticalConveyorBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque(), 4));
 
-    public static CatwalkBlock CATWALK = register("catwalk", new CatwalkBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
-    public static CatwalkStairsBlock CATWALK_STAIRS = register("catwalk_stairs", new CatwalkStairsBlock(FabricBlockSettings.copy(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
+    public static CatwalkBlock CATWALK = register("catwalk", new CatwalkBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
+    public static CatwalkStairsBlock CATWALK_STAIRS = register("catwalk_stairs", new CatwalkStairsBlock(FabricBlockSettings.copyOf(Blocks.STONE).sounds(BlockSoundGroup.METAL).nonOpaque()));
 
     public static void init() {
 

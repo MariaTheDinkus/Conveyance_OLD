@@ -3,7 +3,7 @@
 	"package": "com.zundrel.conveyance.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
-		"EntityShapeContextAccess"
+		"EntityContextImplAccess"
 	],
 	"client": [
 		
