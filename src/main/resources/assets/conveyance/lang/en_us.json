@@ -3,6 +3,7 @@
 	
 	"block.conveyance.alternator": "Alternator",
 	"block.conveyance.splitter": "Splitter",
+	"block.conveyance.incinerator": "Incinerator",
 	"block.conveyance.inserter": "Inserter",
 	"block.conveyance.inserter_fast": "Fast Inserter",
 	"block.conveyance.conveyor": "Conveyor",
