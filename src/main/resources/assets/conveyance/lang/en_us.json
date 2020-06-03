@@ -21,5 +21,8 @@
 	"item.conveyance.wrench": "Wrench",
 	"item.conveyance.hammer": "Hammer",
 	
-	"rei.category.metalworking_table": "Metalworking"
+	"rei.category.metalworking_table": "Metalworking",
+	
+	"book.conveyance.name": "Conveyor Manual",
+	"book.conveyance.landing_text": "A user's guide to utilizing conveyors."
 }

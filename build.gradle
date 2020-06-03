@@ -69,6 +69,9 @@ dependencies {
 	include "alexiil.mc.lib:libblockattributes-core:0.6.4"
     include "alexiil.mc.lib:libblockattributes-items:0.6.4"
 	
+	modImplementation "com.github.Vazkii:Patchouli:1.15-fabric-SNAPSHOT"
+	include "com.github.Vazkii:Patchouli:1.15-fabric-SNAPSHOT"
+	
 	modApi "teamreborn:energy:${project.energy_version}"
 	include "teamreborn:energy:${project.energy_version}"
 }

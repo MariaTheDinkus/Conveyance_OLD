@@ -1,0 +1,7 @@
+{
+	"name": "book.conveyance.name",
+	"landing_text": "book.conveyance.landing_text",
+	"version": 1,
+	"model": "conveyance:conveyor_manual",
+	"creative_tab": "conveyance:general"
+}
