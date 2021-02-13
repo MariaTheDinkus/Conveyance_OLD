@@ -39,7 +39,7 @@ public class CatwalkBlock extends Block implements BlockWrenchable {
     @Override
     public void onWrenched(World world, PlayerEntity playerEntity, BlockHitResult blockHitResult) {
         BlockPos pos = blockHitResult.getBlockPos();
-        if (ModKeys.isControlPressed(playerEntity)) {
+        if (playerEntity.isSneaking()) {
             world.setBlockState(pos, world.getBlockState(pos).cycle(ConveyorProperties.FLOOR));
             return;
         }

@@ -8,9 +8,9 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
@@ -19,8 +19,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 
 import java.util.Objects;
-import java.util.logging.Logger;
-import java.util.stream.IntStream;
 
 public class InserterBlockEntity extends BlockEntity implements SingularStackInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity, Tickable {
     private DefaultedList<ItemStack> stacks = DefaultedList.ofSize(1, ItemStack.EMPTY);
@@ -28,6 +26,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
     protected int prevPosition = 0;
     protected boolean hasInput = false;
     protected boolean hasOutput = false;
+    protected String filterItem = "";
 
     public InserterBlockEntity() {
         super(ConveyanceBlockEntities.INSERTER);
@@ -57,13 +56,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
 
             // Get a slot with something to move
             if (position == 0) {
-                int slotToUse = -1;
-                for (int i = 0; i < inventory.size(); i++) {
-                    if (!inventory.getStack(i).isEmpty()) {
-                        slotToUse = i;
-                        break;
-                    }
-                }
+                int slotToUse = getSourceSlot(inventory);
 
                 // Found a slot with a usable stack, let's check if we can use it
                 if (slotToUse != -1) {
@@ -112,6 +105,33 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
     }
 
     /**
+     * This function returns a possible slot to take items from. It checks for a filter on the inserter
+     * and a slot in the inventory to take the items from.
+     *
+     * @param inventory The inventory from where to take items
+     * @return int The slot-id when one is found, or -1 when no slot is found
+     */
+    private int getSourceSlot(Inventory inventory) {
+        int slotToUse = -1;
+
+        for (int i = 0; i < inventory.size(); i++) {
+            if (!inventory.getStack(i).isEmpty()) {
+                if (!hasFilterItem()) {
+                    slotToUse = i;
+                    return slotToUse;
+                } else {
+                    if (inventory.getStack(i).getTranslationKey().equals(getFilterItem())) {
+                        slotToUse = i;
+                        return slotToUse;
+                    }
+                }
+            }
+        }
+        return slotToUse;
+    }
+
+
+    /**
      * Returns a targetslot, or -1, for a target-inventory
      *
      * @param inventory   The inventory that needs to be checked
@@ -123,16 +143,16 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
         int targetSlot = -1;
 
         for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.getStack(i).isEmpty() && inventory.isValid(i, sourceStack)) {
-                targetSlot = i;
-                break;
-            }
-            if (inventory.getStack(i).getName() == sourceStack.getName()) {
+            if (inventory.getStack(i).getItem() == sourceStack.getItem()) {
                 int availableSpace = inventory.getStack(i).getMaxCount() - inventory.getStack(i).getCount();
                 if (availableSpace > 0 && inventory.isValid(i, sourceStack)) {
                     targetSlot = i;
                     break;
                 }
+            }
+            if (inventory.getStack(i).isEmpty() && inventory.isValid(i, sourceStack)) {
+                targetSlot = i;
+                break;
             }
         }
         return targetSlot;
@@ -152,17 +172,19 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
         int[] availableSlots = inventory.getAvailableSlots(direction);
 
         for (int i = 0; i < availableSlots.length; i++) {
-            if (inventory.getStack(i).isEmpty() && inventory.canInsert(i, sourceStack, direction)) {
-                targetSlot = i;
-                break;
-            }
-            if (inventory.getStack(i).getName() == sourceStack.getName()) {
+            if (inventory.getStack(i).getItem() == sourceStack.getItem()) {
                 int availableSpace = inventory.getStack(i).getMaxCount() - inventory.getStack(i).getCount();
                 if (availableSpace > 0 && inventory.canInsert(i, sourceStack, direction)) {
                     targetSlot = i;
                     break;
                 }
             }
+
+            if (inventory.getStack(i).isEmpty() && inventory.canInsert(i, sourceStack, direction)) {
+                targetSlot = i;
+                break;
+            }
+
         }
         return targetSlot;
     }
@@ -259,21 +281,21 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
 
     private static ItemStack transfer(Inventory from, Inventory to, ItemStack stack, int slot, Direction direction) {
         ItemStack itemStack = to.getStack(slot);
-        if (canInsert(to, stack, slot, direction)) {
-            boolean bl = false;
-            boolean bl2 = to.isEmpty();
-            if (itemStack.isEmpty()) {
-                to.setStack(slot, stack);
-                stack = ItemStack.EMPTY;
-                bl = true;
-            } else if (canMergeItems(itemStack, stack)) {
-                int i = stack.getMaxCount() - itemStack.getCount();
-                int j = Math.min(stack.getCount(), i);
-                stack.decrement(j);
-                itemStack.increment(j);
-                bl = j > 0;
-            }
+
+        boolean bl = false;
+        boolean bl2 = to.isEmpty();
+        if (itemStack.isEmpty()) {
+            to.setStack(slot, stack);
+            stack = ItemStack.EMPTY;
+            bl = true;
+        } else if (canMergeItems(itemStack, stack)) {
+            int i = stack.getMaxCount() - itemStack.getCount();
+            int j = Math.min(stack.getCount(), i);
+            stack.decrement(j);
+            itemStack.increment(j);
+            bl = j > 0;
         }
+
 
         return stack;
     }
@@ -317,6 +339,24 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
         this.position = position;
     }
 
+
+
+    public String getFilterItem() {
+        return filterItem;
+    }
+
+    public void setFilterItem(Item filterItem) {
+        this.filterItem = filterItem.getTranslationKey();
+    }
+
+    public void clearFilterItem() {
+        this.filterItem = "";
+    }
+
+    public boolean hasFilterItem() {
+        return !(this.getFilterItem().isEmpty());
+    }
+
     public void sync() {
         if (world instanceof ServerWorld) {
             ((ServerWorld) world).getChunkManager().markForUpdate(pos);
@@ -337,6 +377,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
         position = compoundTag.getInt("position");
         hasInput = compoundTag.getBoolean("hasInput");
         hasOutput = compoundTag.getBoolean("hasOutput");
+        filterItem = compoundTag.getString("filterItem");
     }
 
     @Override
@@ -350,6 +391,7 @@ public class InserterBlockEntity extends BlockEntity implements SingularStackInv
         compoundTag.putInt("position", position);
         compoundTag.putBoolean("hasInput", hasInput);
         compoundTag.putBoolean("hasOutput", hasOutput);
+        compoundTag.putString("filterItem", filterItem);
         return super.toTag(compoundTag);
     }
 

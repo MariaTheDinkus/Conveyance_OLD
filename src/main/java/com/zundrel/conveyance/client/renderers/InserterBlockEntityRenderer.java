@@ -53,7 +53,12 @@ public class InserterBlockEntityRenderer extends BlockEntityRenderer<InserterBlo
 			modelInserterArm.getMiddleArm().pitch = (float) Math.toRadians(20);
 		}
 
-		modelInserterArm.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(new Identifier("conveyance:textures/block/inserter_" + type + ".png"))), light, overlay, 1, 1, 1, 1);
+		float red = 1.0f;
+		if (blockEntity.hasFilterItem()) {
+			red = 150.0f;
+		}
+
+		modelInserterArm.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(new Identifier("conveyance:textures/block/inserter_" + type + ".png"))), light, overlay, red, 1, 1, 1);
 		matrices.pop();
 
 		if (!blockEntity.isEmpty()) {

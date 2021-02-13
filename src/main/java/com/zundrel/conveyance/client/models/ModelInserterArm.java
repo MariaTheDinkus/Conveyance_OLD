@@ -50,7 +50,7 @@ public class ModelInserterArm extends Model {
 
 	@Override
 	public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-		lowerArm.render(matrixStack, buffer, packedLight, packedOverlay);
+		lowerArm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	public void setRotationAngle(ModelPart ModelPart, float x, float y, float z) {
