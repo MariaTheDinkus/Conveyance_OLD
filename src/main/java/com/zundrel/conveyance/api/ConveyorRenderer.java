@@ -28,6 +28,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.LightType;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 @Environment(EnvType.CLIENT)
 public interface ConveyorRenderer<T extends BlockEntity> {
@@ -129,10 +130,14 @@ public interface ConveyorRenderer<T extends BlockEntity> {
                     matrixStack.translate(x * 2, y * 0.5F, z * 2);
                 }
 
-                MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState(), matrixStack, vertexConsumerProvider, light, OverlayTexture.DEFAULT_UV);
-                if (stack.getItem() instanceof TallBlockItem) {
-                    matrixStack.translate(0, 1, 0);
-                    MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState().with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), matrixStack, vertexConsumerProvider, light, OverlayTexture.DEFAULT_UV);
+                try {
+                    MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState(), matrixStack, vertexConsumerProvider, light, OverlayTexture.DEFAULT_UV);
+                    if (stack.getItem() instanceof TallBlockItem) {
+                        matrixStack.translate(0, 1, 0);
+                        MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState().with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), matrixStack, vertexConsumerProvider, light, OverlayTexture.DEFAULT_UV);
+                    }
+                } catch (Exception e) {
+                    Logger.getGlobal().warning(e.getMessage());
                 }
 
                 matrixStack.pop();
